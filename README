@@ -1,0 +1,2 @@
+This application moves your downloaded video files (movies and TV shows) to their respective location on your disk.
+It creates folders for the video files based on some simple Kodi media player rules (video name followed by year if available).
