@@ -40,7 +40,7 @@ public class VideoNameTrimmer
         for (String part : removeParts) {
             Pattern compile = Pattern.compile("(?i)(" + part + ")");
             Matcher matcher = compile.matcher(videoName);
-            if (matcher.find()) {
+            if (!part.isEmpty() && matcher.find()) {
                 videoName = videoName.substring(0, matcher.start());
             }
         }
