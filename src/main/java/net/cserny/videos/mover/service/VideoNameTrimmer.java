@@ -1,7 +1,7 @@
 package net.cserny.videos.mover.service;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -27,9 +28,14 @@ public class VideoNameTrimmer
 
     private void loadRemoveParts()
     {
+        String line;
+        InputStream in = getClass().getResourceAsStream("/videoname.parts");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
         try {
-            Path videoNameParts = Paths.get(getClass().getResource("/videoname.parts").getPath());
-            removeParts.addAll(Files.readAllLines(videoNameParts).stream().collect(Collectors.toList()));
+            while ((line = reader.readLine()) != null) {
+                removeParts.add(line);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
