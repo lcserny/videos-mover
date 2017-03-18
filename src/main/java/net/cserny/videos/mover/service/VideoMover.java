@@ -22,47 +22,22 @@ public class VideoMover
     private String tvShowPath;
     private Pattern videoPattern = Pattern.compile("(.*)(\\d{4})");
 
-    public VideoMover(DownloadsVideo downloadsVideo)
-    {
+    public VideoMover(DownloadsVideo downloadsVideo) {
         this.downloadsVideo = downloadsVideo;
     }
 
-    public void setMoviePath(String moviePath)
-    {
+    public void setMoviePath(String moviePath) {
         this.moviePath = moviePath;
     }
 
-    public void setTvShowPath(String tvShowPath)
-    {
+    public void setTvShowPath(String tvShowPath) {
         this.tvShowPath = tvShowPath;
     }
 
-    public void move()
-    {
-        if (downloadsVideo.getMovie()) {
-            moveToMovies(downloadsVideo);
-        } else if (downloadsVideo.getTvShow()) {
-            moveToTvShows(downloadsVideo);
-        }
-    }
+    public void move() {
+        createFolder(new File(downloadsVideo.getOutputPath()));
 
-    private void moveToMovies(DownloadsVideo downloadsVideo)
-    {
-        processMove(downloadsVideo, moviePath);
-    }
-
-    private void moveToTvShows(DownloadsVideo downloadsVideo)
-    {
-        processMove(downloadsVideo, tvShowPath);
-    }
-
-    private void processMove(DownloadsVideo downloadsVideo, String path)
-    {
-        DownloadsVideoName downloadsVideoName = getVideoName(downloadsVideo);
-        String videoFolderName = createFolder(path, downloadsVideoName);
-        String newVideoFileName = videoFolderName + "/" + downloadsVideo.getFileName();
-
-        File newVideoFile = new File(newVideoFileName);
+        File newVideoFile = new File(getNewVideoFileName(downloadsVideo.getOutputPath(), downloadsVideo));
         if (newVideoFile.exists()) {
             return;
         }
@@ -74,8 +49,26 @@ public class VideoMover
         }
     }
 
-    private String toCamelCase(String text)
-    {
+    public File getNewVideoLocation() {
+        String selectedPath = null;
+        if (downloadsVideo.getMovie()) {
+            selectedPath = moviePath;
+        } else if (downloadsVideo.getTvShow()) {
+            selectedPath = tvShowPath;
+        }
+        return getNewFolderPath(downloadsVideo, selectedPath);
+    }
+
+    private File getNewFolderPath(DownloadsVideo downloadsVideo, String path) {
+        DownloadsVideoName downloadsVideoName = getVideoName(downloadsVideo);
+        return getNewVideoFolder(path, downloadsVideoName);
+    }
+
+    private String getNewVideoFileName(String videoFolder, DownloadsVideo downloadsVideo) {
+        return videoFolder + "/" + downloadsVideo.getFileName();
+    }
+
+    private String toCamelCase(String text) {
         String[] parts = text.split(" ");
         String camelCaseString = "";
         for (String part : parts){
@@ -84,13 +77,15 @@ public class VideoMover
         return camelCaseString;
     }
 
-    private String toProperCase(String text)
-    {
+    private String toProperCase(String text) {
         return text.substring(0, 1).toUpperCase() + text.substring(1);
     }
 
-    private String createFolder(String path, DownloadsVideoName videoName)
-    {
+    private File getNewVideoFolder(String path, DownloadsVideoName videoName) {
+        if (path == null) {
+            return null;
+        }
+
         File videoParent = new File(path);
         File[] folders = videoParent.listFiles();
         StringMetric stringMetric = StringMetrics.cosineSimilarity();
@@ -100,27 +95,25 @@ public class VideoMover
                 File folder = folders[i];
                 float result = stringMetric.compare(videoName.getName(), folder.getName());
                 if (result >= ACCEPTED_SEARCH_COEFFICIENT) {
-                    return folder.getAbsolutePath();
+                    return folder;
                 }
             }
         }
 
-        File videoFolder = new File(path + "/" + videoName.getFormattedName());
+        return new File(path + "/" + videoName.getFormattedName());
+    }
+
+    private void createFolder(File videoFolder) {
         if (!videoFolder.exists()) {
             videoFolder.mkdir();
         }
-
-        return videoFolder.getAbsolutePath();
     }
 
-    private DownloadsVideoName getVideoName(DownloadsVideo downloadsVideo)
-    {
+    private DownloadsVideoName getVideoName(DownloadsVideo downloadsVideo) {
+        String videoName = preVideoNameProcess(downloadsVideo);
         Integer year = null;
-        String videoName = removeExtension(downloadsVideo.getFile().getName());
-        VideoNameTrimmer trimmer = new VideoNameTrimmer();
-        videoName = trimmer.trim(videoName);
-        Matcher matcher = videoPattern.matcher(videoName);
 
+        Matcher matcher = videoPattern.matcher(videoName);
         if (matcher.find()) {
             videoName = matcher.group(1);
             String yearString = matcher.group(2);
@@ -129,9 +122,21 @@ public class VideoMover
             }
         }
 
-        videoName = videoName.replaceAll("(\\.|_)", " ");
-        videoName = videoName.trim();
+        return getDownloadsVideoName(year, postVideoNameProcess(videoName));
+    }
 
+    private String preVideoNameProcess(DownloadsVideo downloadsVideo) {
+        VideoNameTrimmer trimmer = new VideoNameTrimmer();
+        String videoName = removeExtension(downloadsVideo.getFile().getName());
+
+        return trimmer.trim(videoName);
+    }
+
+    private String postVideoNameProcess(String videoName) {
+        return videoName.replaceAll("(\\.|_)", " ").trim();
+    }
+
+    private DownloadsVideoName getDownloadsVideoName(Integer year, String videoName) {
         DownloadsVideoName downloadsVideoName = new DownloadsVideoName();
         downloadsVideoName.setName(toCamelCase(videoName).trim());
         downloadsVideoName.setYear(year);
@@ -139,8 +144,7 @@ public class VideoMover
         return downloadsVideoName;
     }
 
-    private String removeExtension(String test)
-    {
+    private String removeExtension(String test) {
         return test.substring(0, test.length() - 3);
     }
 }

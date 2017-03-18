@@ -11,7 +11,7 @@ import java.io.IOException;
 /**
  * Created by Leonardo Cserny on 16.10.2016.
  */
-public class MainApplication extends Application
+public class VideosMoverApplication extends Application
 {
     public static void main(String[] args) throws IOException
     {
@@ -22,7 +22,7 @@ public class MainApplication extends Application
     public void start(Stage primaryStage) throws Exception
     {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
-        Scene scene = new Scene(root, 600, 600);
+        Scene scene = new Scene(root, 800, 600);
 
         primaryStage.setScene(scene);
         primaryStage.setTitle("Downloads Video Mover");

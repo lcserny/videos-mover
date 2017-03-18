@@ -16,6 +16,7 @@ public class DownloadsVideo
     private StringProperty fileName = new SimpleStringProperty();
     private BooleanProperty movie = new SimpleBooleanProperty();
     private BooleanProperty tvShow = new SimpleBooleanProperty();
+    private StringProperty outputPath = new SimpleStringProperty();
 
     public File getFile()
     {
@@ -80,6 +81,18 @@ public class DownloadsVideo
         } else {
             this.tvShow.set(false);
         }
+    }
+
+    public String getOutputPath() {
+        return outputPath.get();
+    }
+
+    public StringProperty outputPathProperty() {
+        return outputPath;
+    }
+
+    public void setOutputPath(String outputPath) {
+        this.outputPath.set(outputPath);
     }
 
     @Override

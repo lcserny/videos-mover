@@ -26,38 +26,11 @@ public class VideoProvider
     private Detector detector = new DefaultDetector(MimeTypes.getDefaultMimeTypes());
     private List<String> allowedTypes = getDefaultAllowedTypes();
 
-    public VideoProvider(String rootPath)
-    {
+    public VideoProvider(String rootPath) {
         this.rootPath = rootPath;
     }
 
-    public Detector getDetector()
-    {
-        return detector;
-    }
-
-    public void setDetector(Detector detector)
-    {
-        this.detector = detector;
-    }
-
-    public List<String> getExcludePaths()
-    {
-        return excludePaths;
-    }
-
-    public void setExcludePaths(List<String> excludePaths)
-    {
-        this.excludePaths = excludePaths;
-    }
-
-    public void addExcludePath(String path)
-    {
-        this.excludePaths.add(path);
-    }
-
-    private List<String> getDefaultAllowedTypes()
-    {
+    private List<String> getDefaultAllowedTypes() {
         List<String> allowedTypes = new ArrayList<>();
         allowedTypes.add("video");
         allowedTypes.add("application/x-matroska");
@@ -66,8 +39,7 @@ public class VideoProvider
         return allowedTypes;
     }
 
-    public List<File> processVideoFiles() throws IOException
-    {
+    public List<File> processVideoFiles() throws IOException {
         List<File> videoFiles = new ArrayList<>();
 
         File directory = new File(rootPath);
@@ -76,8 +48,7 @@ public class VideoProvider
         return videoFiles;
     }
 
-    private void addVideosToList(List<File> videoFiles, File directory) throws IOException
-    {
+    private void addVideosToList(List<File> videoFiles, File directory) throws IOException {
         File[] files = directory.listFiles();
         if (files != null) {
             for (File file : files) {
@@ -92,8 +63,7 @@ public class VideoProvider
         }
     }
 
-    private void processFile(List<File> videoFiles, File file) throws IOException
-    {
+    private void processFile(List<File> videoFiles, File file) throws IOException {
         if (isVideoSizeAcceptable(file)) {
             try (TikaInputStream stream = TikaInputStream.get(Paths.get(file.getAbsolutePath()))) {
                 Metadata metadata = new Metadata();
@@ -105,8 +75,7 @@ public class VideoProvider
         }
     }
 
-    private boolean doesMimeTypeContainVideo(String fileInfo)
-    {
+    private boolean doesMimeTypeContainVideo(String fileInfo) {
         for (String allowedType : allowedTypes) {
             if (fileInfo.contains(allowedType)) {
                 return true;
@@ -115,13 +84,11 @@ public class VideoProvider
         return false;
     }
 
-    private boolean isVideoSizeAcceptable(File file)
-    {
+    private boolean isVideoSizeAcceptable(File file) {
         return file.length() > MIN_VIDEO_SIZE;
     }
 
-    private boolean isPathAllowed(File file)
-    {
+    private boolean isPathAllowed(File file) {
         boolean allowed = true;
         for (String exclude : excludePaths) {
             if (file.getName().contains(exclude)) {

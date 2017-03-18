@@ -1,67 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<VBox fx:id="container" minHeight="600" minWidth="500" style="-fx-pref-height: 600; -fx-pref-width: 600;" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.cserny.videos.mover.ui.controller.MainController">
-    <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-pref-height: 75;">
-        <children>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" style="-fx-pref-width: 350; -fx-pref-height: 100;">
-                <center>
-                    <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-padding: 25 0 25 25;" BorderPane.alignment="CENTER">
-                        <children>
-                            <Button fx:id="chooseButton" alignment="CENTER" mnemonicParsing="false" onAction="#setDownloadsPath" style="-fx-min-width: 50;" text="Change" />
-                            <TextField fx:id="chooseTextField" alignment="CENTER_LEFT" disable="true" style="-fx-pref-width: 225;" />
-                        </children>
-                    </HBox>
-                </center>
+<VBox fx:id="container" minHeight="600" minWidth="800" style="-fx-pref-height: 600; -fx-pref-width: 800;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.cserny.videos.mover.ui.controller.MainController">
+   <children>
+       <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-pref-height: 75;">
+           <children>
+               <BorderPane prefHeight="200.0" prefWidth="200.0" style="-fx-pref-width: 550; -fx-pref-height: 100;">
+                   <center>
+                       <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-padding: 25 0 25 25;" BorderPane.alignment="CENTER">
+                           <children>
+                               <Button fx:id="chooseButton" alignment="CENTER" mnemonicParsing="false" onAction="#setDownloadsPath" style="-fx-min-width: 50;" text="Change" />
+                               <TextField fx:id="chooseTextField" alignment="CENTER_LEFT" disable="true" style="-fx-pref-width: 325;" />
+                           </children>
+                       </HBox>
+                   </center>
+               </BorderPane>
+               <BorderPane prefHeight="200.0" prefWidth="200.0">
+                   <center>
+                       <Button fx:id="scanButton" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#loadTableView" style="-fx-padding: 10 25;" text="Scan for Videos" textAlignment="CENTER" BorderPane.alignment="CENTER" />
+                   </center>
             </BorderPane>
-            <BorderPane prefHeight="200.0" prefWidth="200.0">
-                <center>
-                    <Button fx:id="scanButton" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#loadTableView" style="-fx-padding: 10 25;" text="Scan for Videos" textAlignment="CENTER" BorderPane.alignment="CENTER" />
-                </center></BorderPane>
-        </children>
-    </HBox>
-    
-    <ScrollPane>
-        <TableView fx:id="tableView" style="-fx-pref-width: 595; -fx-pref-height: 420;" />
-    </ScrollPane>
-   <HBox prefHeight="100.0" prefWidth="200.0">
-      <children>
-         <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-pref-width: 350;">
-            <children>
-               <BorderPane prefHeight="200.0" prefWidth="200.0">
-                  <center>
-                     <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                        <children>
-                           <Button fx:id="chooseMoviePathButton" mnemonicParsing="false" text="Movies Path" onAction="#setMoviePath" />
-                           <TextField fx:id="chooseMoviePathTextField" disable="true" style="-fx-pref-width: 200;" />
-                        </children>
-                     </HBox>
-                  </center>
-               </BorderPane>
-               <BorderPane prefHeight="200.0" prefWidth="200.0">
-                  <center>
-                     <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                        <children>
-                           <Button fx:id="chooseTvShowPathButton" mnemonicParsing="false" text="TvShow Path" onAction="#setTvShowPath" />
-                           <TextField fx:id="chooseTvShowPathTextField" disable="true" style="-fx-pref-width: 200;" />
-                        </children>
-                     </HBox>
-                  </center>
-               </BorderPane>
-            </children>
-         </VBox>
-          <BorderPane prefHeight="200.0" prefWidth="200.0" style="-fx-pref-height: 100; -fx-pref-width: 250;">
-              <center>
-                  <Button fx:id="moveButton" mnemonicParsing="false" onAction="#moveVideos" style="-fx-padding: 30 75;" text="Move Videos!" BorderPane.alignment="CENTER" />
-              </center>
-          </BorderPane>
-      </children>
-   </HBox>
+           </children>
+       </HBox>
+       
+       <ScrollPane>
+          <content>
+              <TableView fx:id="tableView" />
+          </content>
+       </ScrollPane>
+
+      <HBox prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-pref-width: 500;">
+               <children>
+                  <BorderPane prefHeight="200.0" prefWidth="200.0">
+                     <center>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <Button fx:id="chooseMoviePathButton" mnemonicParsing="false" onAction="#setMoviePath" text="Movies Path" />
+                              <TextField fx:id="chooseMoviePathTextField" disable="true" style="-fx-pref-width: 300;" />
+                           </children>
+                        </HBox>
+                     </center>
+                  </BorderPane>
+                  <BorderPane prefHeight="200.0" prefWidth="200.0">
+                     <center>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <Button fx:id="chooseTvShowPathButton" mnemonicParsing="false" onAction="#setTvShowPath" text="TvShow Path" />
+                              <TextField fx:id="chooseTvShowPathTextField" disable="true" style="-fx-pref-width: 300;" />
+                           </children>
+                        </HBox>
+                     </center>
+                  </BorderPane>
+               </children>
+            </VBox>
+             <BorderPane prefHeight="200.0" prefWidth="200.0" style="-fx-pref-height: 100; -fx-pref-width: 250;">
+                 <center>
+                     <Button fx:id="moveButton" mnemonicParsing="false" onAction="#moveVideos" style="-fx-padding: 30 75;" text="Move Videos!" BorderPane.alignment="CENTER" />
+                 </center>
+             </BorderPane>
+         </children>
+      </HBox>
+   </children>
 </VBox>
