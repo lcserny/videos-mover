@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  */
 public class VideoMover
 {
-    public static final double ACCEPTED_SEARCH_COEFFICIENT = 0.8;
+    public static final double ACCEPTED_SEARCH_COEFFICIENT = 0.87;
 
     private DownloadsVideo downloadsVideo;
     private String moviePath;
