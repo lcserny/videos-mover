@@ -16,9 +16,8 @@ import net.cserny.videos.mover.ui.model.DownloadsVideo;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Leonardo Cserny on 16.10.2016.
@@ -49,10 +48,11 @@ public class MainController implements Initializable
 
     public void loadTableView() {
         tableView.getItems().clear();
+        List<DownloadsVideo> tmpList = new ArrayList<>();
         for (File videoFile : getVideoFiles(downloadsPath)) {
-            DownloadsVideo item = getDownloadsVideo(videoFile);
-            tableView.getItems().add(item);
+            tableView.getItems().add(getDownloadsVideo(videoFile));
         }
+        Collections.sort(tableView.getItems(), (o1, o2) -> o1.getFileName().toLowerCase().compareTo(o2.getFileName().toLowerCase()));
     }
 
     public void setDownloadsPath(ActionEvent actionEvent) {
