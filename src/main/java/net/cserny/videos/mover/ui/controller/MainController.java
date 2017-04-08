@@ -48,7 +48,6 @@ public class MainController implements Initializable
 
     public void loadTableView() {
         tableView.getItems().clear();
-        List<DownloadsVideo> tmpList = new ArrayList<>();
         for (File videoFile : getVideoFiles(downloadsPath)) {
             tableView.getItems().add(getDownloadsVideo(videoFile));
         }
