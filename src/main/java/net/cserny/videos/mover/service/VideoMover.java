@@ -2,11 +2,15 @@ package net.cserny.videos.mover.service;
 
 import net.cserny.videos.mover.ui.model.DownloadsVideo;
 import net.cserny.videos.mover.ui.model.DownloadsVideoName;
+import net.cserny.videos.mover.ui.model.SubtitleDTO;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.simmetrics.StringMetric;
 import org.simmetrics.metrics.StringMetrics;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +24,7 @@ public class VideoMover
     private DownloadsVideo downloadsVideo;
     private String moviePath;
     private String tvShowPath;
+    private SubtitleExtensionsProvider subtitleExtensionsProvider = new SubtitleExtensionsProvider();
     private Pattern videoPattern = Pattern.compile("(.*)(\\d{4})");
 
     public VideoMover(DownloadsVideo downloadsVideo) {
@@ -38,15 +43,58 @@ public class VideoMover
         createFolder(new File(downloadsVideo.getOutputPath()));
 
         File newVideoFile = new File(getNewVideoFileName(downloadsVideo.getOutputPath(), downloadsVideo));
+        List<SubtitleDTO> subtitles = findSubtitles(downloadsVideo);
         if (newVideoFile.exists()) {
             return;
         }
 
         try {
             FileUtils.moveFile(downloadsVideo.getFile(), newVideoFile);
+            for (SubtitleDTO subtitleDTO : subtitles) {
+                FileUtils.moveFile(subtitleDTO.getFrom(), subtitleDTO.getTo());
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private List<SubtitleDTO> findSubtitles(DownloadsVideo downloadsVideo) {
+        List<SubtitleDTO> subtitles = new ArrayList<>();
+        List<File> subtitleFiles = findFilesByExtension(downloadsVideo.getPath(), subtitleExtensionsProvider.getExtensions());
+        for (File subtitleFile : subtitleFiles) {
+            subtitles.add(createSubtitleDTO(subtitleFile, downloadsVideo));
+        }
+        return subtitles;
+    }
+
+    private List<File> findFilesByExtension(String path, List<String> extensions) {
+        List<File> files = new ArrayList<>();
+        attachFilesByExtensions(files, path, extensions);
+        return files;
+    }
+
+    private void attachFilesByExtensions(List<File> files, String path, List<String> extensions) {
+        File dir = new File(path);
+        File[] dirFiles = dir.listFiles();
+        if (dirFiles != null && dirFiles.length > 0) {
+            for (File file : dirFiles) {
+                if (!file.isDirectory()) {
+                    if (extensions.contains(FilenameUtils.getExtension(file.getAbsolutePath()))) {
+                        files.add(file);
+                    }
+                } else {
+                    attachFilesByExtensions(files, file.getPath(), extensions);
+                }
+            }
+        }
+    }
+
+    private SubtitleDTO createSubtitleDTO(File subtitleFile, DownloadsVideo downloadsVideo) {
+        SubtitleDTO subtitleDTO = new SubtitleDTO();
+        subtitleDTO.setFrom(subtitleFile);
+        subtitleDTO.setTo(new File(downloadsVideo.getOutputPath() + "/" + subtitleFile.getName()));
+        subtitleDTO.setExtension(FilenameUtils.getExtension(subtitleFile.getName()));
+        return subtitleDTO;
     }
 
     public File getNewVideoLocation() {
@@ -70,11 +118,11 @@ public class VideoMover
 
     private String toCamelCase(String text) {
         String[] parts = text.split(" ");
-        String camelCaseString = "";
+        StringBuilder camelCaseString = new StringBuilder();
         for (String part : parts){
-            camelCaseString += toProperCase(part) + " ";
+            camelCaseString.append(toProperCase(part)).append(" ");
         }
-        return camelCaseString;
+        return camelCaseString.toString();
     }
 
     private String toProperCase(String text) {

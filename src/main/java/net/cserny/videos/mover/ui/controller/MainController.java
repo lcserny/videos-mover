@@ -51,7 +51,7 @@ public class MainController implements Initializable
         for (File videoFile : getVideoFiles(downloadsPath)) {
             tableView.getItems().add(getDownloadsVideo(videoFile));
         }
-        Collections.sort(tableView.getItems(), (o1, o2) -> o1.getFileName().toLowerCase().compareTo(o2.getFileName().toLowerCase()));
+        tableView.getItems().sort(Comparator.comparing(o -> o.getFileName().toLowerCase()));
     }
 
     public void setDownloadsPath(ActionEvent actionEvent) {
@@ -76,6 +76,8 @@ public class MainController implements Initializable
     }
 
     public void moveVideos(ActionEvent actionEvent) {
+        // TODO: make DownloadsVideo abstract and MovieVideo and TvShowVideo extends it
+
         List<DownloadsVideo> toBeRemoved = new ArrayList<>();
         tableView.getItems()
                 .stream()
@@ -97,6 +99,7 @@ public class MainController implements Initializable
     private DownloadsVideo getDownloadsVideo(File video) {
         DownloadsVideo item = new DownloadsVideo();
         item.setFile(video);
+        item.setPath(video.getParent());
         item.setFileName(video.getName());
         item.setMovie(false);
         item.setTvShow(false);

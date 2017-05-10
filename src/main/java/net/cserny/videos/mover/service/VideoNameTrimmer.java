@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
  */
 public class VideoNameTrimmer
 {
+    public static final String RESOURCE_PATH = "/videoname.parts";
+
     private List<String> removeParts = new ArrayList<>();
 
     public VideoNameTrimmer()
@@ -29,7 +31,7 @@ public class VideoNameTrimmer
     private void loadRemoveParts()
     {
         String line;
-        InputStream in = getClass().getResourceAsStream("/videoname.parts");
+        InputStream in = getClass().getResourceAsStream(RESOURCE_PATH);
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 
         try {

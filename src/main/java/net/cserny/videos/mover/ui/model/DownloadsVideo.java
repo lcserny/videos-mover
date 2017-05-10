@@ -13,6 +13,7 @@ import java.io.File;
 public class DownloadsVideo
 {
     private File file;
+    private String path;
     private StringProperty fileName = new SimpleStringProperty();
     private BooleanProperty movie = new SimpleBooleanProperty();
     private BooleanProperty tvShow = new SimpleBooleanProperty();
@@ -26,6 +27,14 @@ public class DownloadsVideo
     public void setFile(File file)
     {
         this.file = file;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public String getFileName()
