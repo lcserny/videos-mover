@@ -1,9 +1,9 @@
-package net.cserny.videos.mover.ui.model;
+package net.cserny.videos.mover.model;
 
 /**
  * Created by Leonardo Cserny on 20.10.2016.
  */
-public class DownloadsVideoName
+public class VideoNameDTO
 {
     private String name;
     private Integer year;

@@ -1,4 +1,4 @@
-package net.cserny.videos.mover.service;
+package net.cserny.videos.mover.service.provider;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -12,7 +12,7 @@
                        <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-padding: 25 0 25 25;" BorderPane.alignment="CENTER">
                            <children>
                                <Button fx:id="chooseButton" alignment="CENTER" mnemonicParsing="false" onAction="#setDownloadsPath" style="-fx-min-width: 50;" text="Change" />
-                               <TextField fx:id="chooseTextField" alignment="CENTER_LEFT" disable="true" style="-fx-pref-width: 325;" />
+                               <TextField fx:id="downloadsPathTextField" alignment="CENTER_LEFT" disable="true" style="-fx-pref-width: 325;" />
                            </children>
                        </HBox>
                    </center>
@@ -40,7 +40,7 @@
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                            <children>
                               <Button fx:id="chooseMoviePathButton" mnemonicParsing="false" onAction="#setMoviePath" text="Movies Path" />
-                              <TextField fx:id="chooseMoviePathTextField" disable="true" style="-fx-pref-width: 300;" />
+                              <TextField fx:id="moviePathTextField" disable="true" style="-fx-pref-width: 300;" />
                            </children>
                         </HBox>
                      </center>
@@ -50,7 +50,7 @@
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                            <children>
                               <Button fx:id="chooseTvShowPathButton" mnemonicParsing="false" onAction="#setTvShowPath" text="TvShow Path" />
-                              <TextField fx:id="chooseTvShowPathTextField" disable="true" style="-fx-pref-width: 300;" />
+                              <TextField fx:id="tvShowPathTextField" disable="true" style="-fx-pref-width: 300;" />
                            </children>
                         </HBox>
                      </center>

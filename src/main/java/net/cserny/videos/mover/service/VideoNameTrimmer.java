@@ -1,25 +1,20 @@
 package net.cserny.videos.mover.service;
 
-import java.io.*;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Created by Leonardo Cserny on 22.10.2016.
  */
 public class VideoNameTrimmer
 {
-    public static final String RESOURCE_PATH = "/videoname.parts";
+    public static final String RESOURCE_PATH = "/video.name.parts";
 
     private List<String> removeParts = new ArrayList<>();
 

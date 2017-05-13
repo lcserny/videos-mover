@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Created by Leonardo Cserny on 17.10.2016.
@@ -13,7 +14,7 @@ import java.io.File;
 public class DownloadsVideo
 {
     private File file;
-    private String path;
+    private List<File> subtitles;
     private StringProperty fileName = new SimpleStringProperty();
     private BooleanProperty movie = new SimpleBooleanProperty();
     private BooleanProperty tvShow = new SimpleBooleanProperty();
@@ -29,12 +30,12 @@ public class DownloadsVideo
         this.file = file;
     }
 
-    public String getPath() {
-        return path;
+    public List<File> getSubtitles() {
+        return subtitles;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setSubtitles(List<File> subtitles) {
+        this.subtitles = subtitles;
     }
 
     public String getFileName()
@@ -52,7 +53,7 @@ public class DownloadsVideo
         this.fileName.set(fileName);
     }
 
-    public boolean getMovie()
+    public boolean isMovie()
     {
         return movie.get();
     }
@@ -72,7 +73,7 @@ public class DownloadsVideo
         }
     }
 
-    public boolean getTvShow()
+    public boolean isTvShow()
     {
         return tvShow.get();
     }

@@ -1,23 +1,28 @@
 package net.cserny.videos.mover.ui.controller;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
-import net.cserny.videos.mover.service.DefaultPathProvider;
-import net.cserny.videos.mover.service.ComponentConfigurer;
 import net.cserny.videos.mover.service.VideoMover;
-import net.cserny.videos.mover.service.VideoProvider;
+import net.cserny.videos.mover.service.VideoOutputPathResolver;
+import net.cserny.videos.mover.service.VideoScanner;
+import net.cserny.videos.mover.service.VideoSubtitlesFinder;
+import net.cserny.videos.mover.service.provider.SystemPathProvider;
+import net.cserny.videos.mover.ui.configuration.ComponentConfigurer;
 import net.cserny.videos.mover.ui.model.DownloadsVideo;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Created by Leonardo Cserny on 16.10.2016.
@@ -27,154 +32,121 @@ public class MainController implements Initializable
     @FXML
     private VBox container;
     @FXML
-    private TextField chooseMoviePathTextField;
+    private TextField downloadsPathTextField;
     @FXML
-    private TextField chooseTextField;
+    private TextField moviePathTextField;
     @FXML
-    private TextField chooseTvShowPathTextField;
+    private TextField tvShowPathTextField;
     @FXML
     private TableView<DownloadsVideo> tableView;
 
-    private String downloadsPath;
-    private String moviePath;
-    private String tvShowPath;
-    private ComponentConfigurer componentConfigurer = new ComponentConfigurer();
+    private ComponentConfigurer componentConfigurer;
+    private SystemPathProvider pathProvider;
+    private VideoScanner videoScanner;
+    private VideoMover videoMover;
+    private VideoSubtitlesFinder videoSubtitlesFinder;
+    private VideoOutputPathResolver videoOutputPathResolver;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        initDefaultPaths();
+        componentConfigurer = new ComponentConfigurer();
         componentConfigurer.configure(tableView);
+
+        pathProvider = new SystemPathProvider();
+        videoScanner = new VideoScanner();
+        videoMover = new VideoMover();
+        videoSubtitlesFinder = new VideoSubtitlesFinder(pathProvider);
+        videoOutputPathResolver = new VideoOutputPathResolver(pathProvider);
+
+        initDefaults();
+    }
+
+    private void initDefaults() {
+        downloadsPathTextField.setText(pathProvider.getDownloadsPath());
+        moviePathTextField.setText(pathProvider.getMoviePath());
+        tvShowPathTextField.setText(pathProvider.getTvShowPath());
     }
 
     public void loadTableView() {
-        tableView.getItems().clear();
-        for (File videoFile : getVideoFiles(downloadsPath)) {
-            tableView.getItems().add(getDownloadsVideo(videoFile));
+        ObservableList<DownloadsVideo> videoItems = tableView.getItems();
+        videoItems.clear();
+        for (File videoFile : videoScanner.scan(pathProvider.getDownloadsPath())) {
+            videoItems.add(convertFileToDownloadsVideo(videoFile));
         }
-        tableView.getItems().sort(Comparator.comparing(o -> o.getFileName().toLowerCase()));
+        videoItems.sort(Comparator.comparing(video -> video.getFileName().toLowerCase()));
+    }
+
+    public void moveVideos(ActionEvent actionEvent) {
+        List<DownloadsVideo> toBeRemoved = new ArrayList<>();
+        for (DownloadsVideo downloadsVideo : tableView.getItems()) {
+            if (downloadsVideo.isMovie() || downloadsVideo.isTvShow()) {
+                videoMover.move(downloadsVideo);
+                toBeRemoved.add(downloadsVideo);
+            }
+        }
+        tableView.getItems().removeAll(toBeRemoved);
     }
 
     public void setDownloadsPath(ActionEvent actionEvent) {
-        File selectedDirectory = getSelectedDirectory("Choose Downlooads folder", downloadsPath);
+        File selectedDirectory = getSelectedDirectory("Choose Downlooads folder", pathProvider.getDownloadsPath());
         if (selectedDirectory != null) {
-            setDownloadsPath(selectedDirectory.getAbsolutePath());
+            String selectedPath = selectedDirectory.getAbsolutePath();
+            pathProvider.setDownloadsPath(selectedPath);
+            downloadsPathTextField.setText(selectedPath);
         }
     }
 
     public void setMoviePath(ActionEvent actionEvent) {
-        File selectedDirectory = getSelectedDirectory("Choose Movie folder", moviePath);
+        File selectedDirectory = getSelectedDirectory("Choose Movie folder", pathProvider.getMoviePath());
         if (selectedDirectory != null) {
-            setMoviePath(selectedDirectory.getAbsolutePath());
+            String selectedPath = selectedDirectory.getAbsolutePath();
+            pathProvider.setMoviePath(selectedPath);
+            moviePathTextField.setText(selectedPath);
         }
     }
 
     public void setTvShowPath(ActionEvent actionEvent) {
-        File selectedDirectory = getSelectedDirectory("Choose Tv Show folder", tvShowPath);
+        File selectedDirectory = getSelectedDirectory("Choose Tv Show folder", pathProvider.getTvShowPath());
         if (selectedDirectory != null) {
-            setTvShowPath(selectedDirectory.getAbsolutePath());
+            String selectedPath = selectedDirectory.getAbsolutePath();
+            pathProvider.setTvShowPath(selectedPath);
+            tvShowPathTextField.setText(selectedPath);
         }
     }
 
-    public void moveVideos(ActionEvent actionEvent) {
-        // TODO: make DownloadsVideo abstract and MovieVideo and TvShowVideo extends it
+    private DownloadsVideo convertFileToDownloadsVideo(File videoFile) {
+        DownloadsVideo downloadsVideo = new DownloadsVideo();
+        downloadsVideo.setFile(videoFile);
+        downloadsVideo.setFileName(videoFile.getName());
+        downloadsVideo.setMovie(false);
+        downloadsVideo.setTvShow(false);
 
-        List<DownloadsVideo> toBeRemoved = new ArrayList<>();
-        tableView.getItems()
-                .stream()
-                .filter(downloadsVideo -> downloadsVideo.getMovie() || downloadsVideo.getTvShow())
-                .forEach(downloadsVideo -> {
-                    getVideoMover(downloadsVideo).move();
-                    toBeRemoved.add(downloadsVideo);
-                });
-        tableView.getItems().removeAll(toBeRemoved);
-    }
-
-    private void initDefaultPaths() {
-        DefaultPathProvider pathProvider = new DefaultPathProvider();
-        setDownloadsPath(pathProvider.getDownloadsPath());
-        setMoviePath(pathProvider.getMoviePath());
-        setTvShowPath(pathProvider.getTvShowPath());
-    }
-
-    private DownloadsVideo getDownloadsVideo(File video) {
-        DownloadsVideo item = new DownloadsVideo();
-        item.setFile(video);
-        item.setPath(video.getParent());
-        item.setFileName(video.getName());
-        item.setMovie(false);
-        item.setTvShow(false);
-
-        item.movieProperty().addListener((obs, wasOn, isNowOn) -> {
-            item.setMovie(isNowOn);
-            processOutputPath(isNowOn, item);
+        downloadsVideo.movieProperty().addListener((obs, prevCheck, currentCheck) -> {
+            downloadsVideo.setMovie(currentCheck);
+            downloadsVideo.setOutputPath(currentCheck ? videoOutputPathResolver.resolve(downloadsVideo) : "");
         });
 
-        item.tvShowProperty().addListener((obs, wasOn, isNowOn) -> {
-            item.setTvShow(isNowOn);
-            processOutputPath(isNowOn, item);
+        downloadsVideo.tvShowProperty().addListener((obs, prevCheck, currentCheck) -> {
+            downloadsVideo.setTvShow(currentCheck);
+            downloadsVideo.setOutputPath(currentCheck ? videoOutputPathResolver.resolve(downloadsVideo) : "");
         });
 
-        return item;
-    }
+        downloadsVideo.setSubtitles(videoSubtitlesFinder.find(downloadsVideo));
 
-    private void processOutputPath(boolean isNowOn, DownloadsVideo downloadsVideo) {
-        String outputPath = "";
-        if (isNowOn) {
-            outputPath = getVideoMover(downloadsVideo).getNewVideoLocation().getAbsolutePath();
-        }
-        downloadsVideo.setOutputPath(outputPath);
-    }
-
-    private List<File> getVideoFiles(String path) {
-        List<File> videoFiles = new ArrayList<>();
-        VideoProvider videoProvider = new VideoProvider(path);
-        try {
-            videoFiles = videoProvider.processVideoFiles();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return videoFiles;
-    }
-
-    private void setDownloadsPath(String path) {
-        downloadsPath = path;
-        chooseTextField.setText(path);
-    }
-
-    private void setMoviePath(String path) {
-        moviePath = path;
-        chooseMoviePathTextField.setText(path);
-    }
-
-    private void setTvShowPath(String path) {
-        tvShowPath = path;
-        chooseTvShowPathTextField.setText(path);
+        return downloadsVideo;
     }
 
     private File getSelectedDirectory(String title, String path) {
+        File directory = new File(path);
         DirectoryChooser chooser = new DirectoryChooser();
         chooser.setTitle(title);
-        setDefaultDirectoryToChooser(chooser, path);
-
-        return chooser.showDialog(getStage());
-    }
-
-    private void setDefaultDirectoryToChooser(DirectoryChooser chooser, String path) {
-        File defaultDirectory = new File(path);
-        if (defaultDirectory.exists()) {
-            chooser.setInitialDirectory(defaultDirectory);
+        if (directory.exists()) {
+            chooser.setInitialDirectory(directory);
         }
+        return chooser.showDialog(getStage());
     }
 
     private Stage getStage() {
         return (Stage) container.getScene().getWindow();
-    }
-
-    private VideoMover getVideoMover(DownloadsVideo downloadsVideo) {
-        VideoMover videoMover = new VideoMover(downloadsVideo);
-        videoMover.setMoviePath(moviePath);
-        videoMover.setTvShowPath(tvShowPath);
-
-        return videoMover;
     }
 }

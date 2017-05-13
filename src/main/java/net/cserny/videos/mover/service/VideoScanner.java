@@ -1,5 +1,7 @@
 package net.cserny.videos.mover.service;
 
+import net.cserny.videos.mover.service.provider.VideoExcludePathsProvider;
+import net.cserny.videos.mover.service.provider.VideoMimeTypeProvider;
 import org.apache.tika.detect.DefaultDetector;
 import org.apache.tika.detect.Detector;
 import org.apache.tika.io.TikaInputStream;
@@ -10,73 +12,55 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by Leonardo Cserny on 16.10.2016.
  */
-public class VideoProvider
+public class VideoScanner
 {
     public static final int MIN_VIDEO_SIZE = 50 * 1024 * 1024;
 
-    private String rootPath;
-    private List<String> excludePaths = Collections.singletonList("Programming Stuff");
     private Detector detector = new DefaultDetector(MimeTypes.getDefaultMimeTypes());
-    private List<String> allowedTypes = getDefaultAllowedTypes();
+    private VideoMimeTypeProvider mimeTypeProvider = new VideoMimeTypeProvider();
+    private VideoExcludePathsProvider excludePathsProvider = new VideoExcludePathsProvider();
 
-    public VideoProvider(String rootPath) {
-        this.rootPath = rootPath;
-    }
-
-    private List<String> getDefaultAllowedTypes() {
-        List<String> allowedTypes = new ArrayList<>();
-        allowedTypes.add("video");
-        allowedTypes.add("application/x-matroska");
-        allowedTypes.add("audio/mp4");
-
-        return allowedTypes;
-    }
-
-    public List<File> processVideoFiles() throws IOException {
+    public List<File> scan(String path) {
         List<File> videoFiles = new ArrayList<>();
-
-        File directory = new File(rootPath);
+        File directory = new File(path);
         addVideosToList(videoFiles, directory);
-
         return videoFiles;
     }
 
-    private void addVideosToList(List<File> videoFiles, File directory) throws IOException {
+    private void addVideosToList(List<File> videoFiles, File directory) {
         File[] files = directory.listFiles();
         if (files != null) {
             for (File file : files) {
-                if (isPathAllowed(file)) {
-                    if (!file.isDirectory()) {
-                        processFile(videoFiles, file);
-                    } else {
-                        addVideosToList(videoFiles, file);
-                    }
+                if (!file.isDirectory()) {
+                    processFile(videoFiles, file);
+                } else {
+                    addVideosToList(videoFiles, file);
                 }
             }
         }
     }
 
-    private void processFile(List<File> videoFiles, File file) throws IOException {
-        if (isVideoSizeAcceptable(file)) {
+    private void processFile(List<File> videoFiles, File file) {
+        if (isVideoSizeAcceptable(file) && isPathAllowed(file)) {
             try (TikaInputStream stream = TikaInputStream.get(Paths.get(file.getAbsolutePath()))) {
                 Metadata metadata = new Metadata();
                 String fileInfo = detector.detect(stream, metadata).toString();
                 if (doesMimeTypeContainVideo(fileInfo)) {
                     videoFiles.add(file);
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
 
     private boolean doesMimeTypeContainVideo(String fileInfo) {
-        for (String allowedType : allowedTypes) {
+        for (String allowedType : getDefaultAllowedTypes()) {
             if (fileInfo.contains(allowedType)) {
                 return true;
             }
@@ -89,13 +73,19 @@ public class VideoProvider
     }
 
     private boolean isPathAllowed(File file) {
-        boolean allowed = true;
-        for (String exclude : excludePaths) {
-            if (file.getName().contains(exclude)) {
-                allowed = false;
-                break;
+        for (String exclude : getDefaultExcludePaths()) {
+            if (file.getParent().contains(exclude)) {
+                return false;
             }
         }
-        return allowed;
+        return true;
+    }
+
+    private List<String> getDefaultAllowedTypes() {
+        return mimeTypeProvider.getMimeTypes();
+    }
+
+    private List<String> getDefaultExcludePaths() {
+        return excludePathsProvider.getExcludePaths();
     }
 }

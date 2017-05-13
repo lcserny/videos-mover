@@ -1,4 +1,4 @@
-package net.cserny.videos.mover.service;
+package net.cserny.videos.mover.ui.configuration;
 
 
 import javafx.scene.control.TableColumn;
@@ -7,8 +7,6 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import net.cserny.videos.mover.ui.model.DownloadsVideo;
-
-import java.io.File;
 
 /**
  * Created by Leonardo Cserny on 18.03.2017.
