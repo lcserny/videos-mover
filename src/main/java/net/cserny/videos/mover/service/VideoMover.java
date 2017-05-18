@@ -2,6 +2,7 @@ package net.cserny.videos.mover.service;
 
 import net.cserny.videos.mover.ui.model.DownloadsVideo;
 import org.apache.commons.io.FileUtils;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.io.IOException;
 /**
  * Created by Leonardo Cserny on 18.10.2016.
  */
+@Service
 public class VideoMover
 {
     public void move(DownloadsVideo downloadsVideo) {

@@ -1,5 +1,9 @@
 package net.cserny.videos.mover.service.provider;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,35 +14,17 @@ import java.util.List;
 /**
  * Created by leonardo on 13.05.2017.
  */
+@Component
 public class VideoExcludePathsProvider
 {
-    public static final String RESOURCE_PATH = "/video.exclude.paths";
+    @Value("${video.exclude.paths}")
+    private String[] paths;
 
-    private List<String> excludePaths = new ArrayList<>();
-
-    public VideoExcludePathsProvider() {
-        loadExcludePaths();
+    public String[] getPaths() {
+        return paths;
     }
 
-    public List<String> getExcludePaths() {
-        return excludePaths;
-    }
-
-    public void setExcludePaths(List<String> excludePaths) {
-        this.excludePaths = excludePaths;
-    }
-
-    private void loadExcludePaths() {
-        String line;
-        InputStream in = getClass().getResourceAsStream(RESOURCE_PATH);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-
-        try {
-            while ((line = reader.readLine()) != null) {
-                excludePaths.add(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void setPaths(String[] paths) {
+        this.paths = paths;
     }
 }

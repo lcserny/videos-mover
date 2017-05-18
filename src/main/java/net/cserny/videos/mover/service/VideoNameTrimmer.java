@@ -1,5 +1,10 @@
 package net.cserny.videos.mover.service;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,35 +17,22 @@ import java.util.regex.Pattern;
 /**
  * Created by Leonardo Cserny on 22.10.2016.
  */
+@Service
 public class VideoNameTrimmer
 {
-    public static final String RESOURCE_PATH = "/video.name.parts";
+    @Value("#{'${video.name.parts}'.split(';')}")
+    private String[] names;
 
-    private List<String> removeParts = new ArrayList<>();
-
-    public VideoNameTrimmer()
-    {
-        loadRemoveParts();
+    public String[] getNames() {
+        return names;
     }
 
-    private void loadRemoveParts()
-    {
-        String line;
-        InputStream in = getClass().getResourceAsStream(RESOURCE_PATH);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-
-        try {
-            while ((line = reader.readLine()) != null) {
-                removeParts.add(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void setNames(String[] names) {
+        this.names = names;
     }
 
-    public String trim(String videoName)
-    {
-        for (String part : removeParts) {
+    public String trim(String videoName) {
+        for (String part : names) {
             Pattern compile = Pattern.compile("(?i)(" + part + ")");
             Matcher matcher = compile.matcher(videoName);
             if (!part.isEmpty() && matcher.find()) {

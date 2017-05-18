@@ -16,6 +16,8 @@ import net.cserny.videos.mover.service.VideoSubtitlesFinder;
 import net.cserny.videos.mover.service.provider.SystemPathProvider;
 import net.cserny.videos.mover.ui.configuration.ComponentConfigurer;
 import net.cserny.videos.mover.ui.model.DownloadsVideo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import java.io.File;
 import java.net.URL;
@@ -27,6 +29,7 @@ import java.util.ResourceBundle;
 /**
  * Created by Leonardo Cserny on 16.10.2016.
  */
+@Controller
 public class MainController implements Initializable
 {
     @FXML
@@ -47,17 +50,39 @@ public class MainController implements Initializable
     private VideoSubtitlesFinder videoSubtitlesFinder;
     private VideoOutputPathResolver videoOutputPathResolver;
 
+    @Autowired
+    public void setComponentConfigurer(ComponentConfigurer componentConfigurer) {
+        this.componentConfigurer = componentConfigurer;
+    }
+
+    @Autowired
+    public void setVideoMover(VideoMover videoMover) {
+        this.videoMover = videoMover;
+    }
+
+    @Autowired
+    public void setVideoOutputPathResolver(VideoOutputPathResolver videoOutputPathResolver) {
+        this.videoOutputPathResolver = videoOutputPathResolver;
+    }
+
+    @Autowired
+    public void setPathProvider(SystemPathProvider pathProvider) {
+        this.pathProvider = pathProvider;
+    }
+
+    @Autowired
+    public void setVideoScanner(VideoScanner videoScanner) {
+        this.videoScanner = videoScanner;
+    }
+
+    @Autowired
+    public void setVideoSubtitlesFinder(VideoSubtitlesFinder videoSubtitlesFinder) {
+        this.videoSubtitlesFinder = videoSubtitlesFinder;
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        componentConfigurer = new ComponentConfigurer();
         componentConfigurer.configure(tableView);
-
-        pathProvider = new SystemPathProvider();
-        videoScanner = new VideoScanner();
-        videoMover = new VideoMover();
-        videoSubtitlesFinder = new VideoSubtitlesFinder(pathProvider);
-        videoOutputPathResolver = new VideoOutputPathResolver(pathProvider);
-
         initDefaults();
     }
 

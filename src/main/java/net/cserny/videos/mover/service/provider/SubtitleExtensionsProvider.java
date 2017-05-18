@@ -1,5 +1,9 @@
 package net.cserny.videos.mover.service.provider;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,35 +14,17 @@ import java.util.List;
 /**
  * Created by leonardo on 10.05.2017.
  */
+@Component
 public class SubtitleExtensionsProvider
 {
-    public static final String RESOURCE_PATH = "/subtitle.extensions";
+    @Value("${video.subtitle.extensions}")
+    private String[] extensions;
 
-    private List<String> extensions = new ArrayList<>();
-
-    public SubtitleExtensionsProvider() {
-        loadSubtitleExtensions();
-    }
-
-    public List<String> getExtensions() {
+    public String[] getExtensions() {
         return extensions;
     }
 
-    public void setExtensions(List<String> extensions) {
+    public void setExtensions(String[] extensions) {
         this.extensions = extensions;
-    }
-
-    private void loadSubtitleExtensions() {
-        String line;
-        InputStream in = getClass().getResourceAsStream(RESOURCE_PATH);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-
-        try {
-            while ((line = reader.readLine()) != null) {
-                extensions.add(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

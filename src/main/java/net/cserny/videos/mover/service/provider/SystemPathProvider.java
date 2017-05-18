@@ -1,8 +1,11 @@
 package net.cserny.videos.mover.service.provider;
 
+import org.springframework.stereotype.Service;
+
 /**
  * Created by Leonardo Cserny on 18.10.2016.
  */
+@Service
 public class SystemPathProvider
 {
     private String downloadsPath;

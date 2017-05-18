@@ -1,5 +1,9 @@
 package net.cserny.videos.mover.service.provider;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,35 +14,17 @@ import java.util.List;
 /**
  * Created by leonardo on 13.05.2017.
  */
+@Component
 public class VideoMimeTypeProvider
 {
-    public static final String RESOURCE_PATH = "/video.mime.types";
+    @Value("${video.mime.types}")
+    private String[] types;
 
-    private List<String> mimeTypes = new ArrayList<>();
-
-    public VideoMimeTypeProvider() {
-        loadMimeTypes();
+    public String[] getTypes() {
+        return types;
     }
 
-    public List<String> getMimeTypes() {
-        return mimeTypes;
-    }
-
-    public void setMimeTypes(List<String> mimeTypes) {
-        this.mimeTypes = mimeTypes;
-    }
-
-    private void loadMimeTypes() {
-        String line;
-        InputStream in = getClass().getResourceAsStream(RESOURCE_PATH);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-
-        try {
-            while ((line = reader.readLine()) != null) {
-                mimeTypes.add(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void setTypes(String[] types) {
+        this.types = types;
     }
 }

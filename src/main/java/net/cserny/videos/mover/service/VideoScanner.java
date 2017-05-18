@@ -7,23 +7,37 @@ import org.apache.tika.detect.Detector;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MimeTypes;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by Leonardo Cserny on 16.10.2016.
  */
+@Service
 public class VideoScanner
 {
     public static final int MIN_VIDEO_SIZE = 50 * 1024 * 1024;
 
     private Detector detector = new DefaultDetector(MimeTypes.getDefaultMimeTypes());
-    private VideoMimeTypeProvider mimeTypeProvider = new VideoMimeTypeProvider();
-    private VideoExcludePathsProvider excludePathsProvider = new VideoExcludePathsProvider();
+    private VideoMimeTypeProvider mimeTypeProvider;
+    private VideoExcludePathsProvider excludePathsProvider;
+
+    @Autowired
+    public void setExcludePathsProvider(VideoExcludePathsProvider excludePathsProvider) {
+        this.excludePathsProvider = excludePathsProvider;
+    }
+
+    @Autowired
+    public void setMimeTypeProvider(VideoMimeTypeProvider mimeTypeProvider) {
+        this.mimeTypeProvider = mimeTypeProvider;
+    }
 
     public List<File> scan(String path) {
         List<File> videoFiles = new ArrayList<>();
@@ -82,10 +96,10 @@ public class VideoScanner
     }
 
     private List<String> getDefaultAllowedTypes() {
-        return mimeTypeProvider.getMimeTypes();
+        return Arrays.asList(mimeTypeProvider.getTypes());
     }
 
     private List<String> getDefaultExcludePaths() {
-        return excludePathsProvider.getExcludePaths();
+        return Arrays.asList(excludePathsProvider.getPaths());
     }
 }

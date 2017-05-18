@@ -4,27 +4,37 @@ import net.cserny.videos.mover.service.provider.SubtitleExtensionsProvider;
 import net.cserny.videos.mover.service.provider.SystemPathProvider;
 import net.cserny.videos.mover.ui.model.DownloadsVideo;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by leonardo on 13.05.2017.
  */
+@Service
 public class VideoSubtitlesFinder
 {
     private SystemPathProvider pathProvider;
-    private SubtitleExtensionsProvider subtitleExtensionsProvider = new SubtitleExtensionsProvider();
+    private SubtitleExtensionsProvider subtitleExtensionsProvider;
 
-    public VideoSubtitlesFinder(SystemPathProvider pathProvider) {
+    @Autowired
+    public void setPathProvider(SystemPathProvider pathProvider) {
         this.pathProvider = pathProvider;
+    }
+
+    @Autowired
+    public void setSubtitleExtensionsProvider(SubtitleExtensionsProvider subtitleExtensionsProvider) {
+        this.subtitleExtensionsProvider = subtitleExtensionsProvider;
     }
 
     public List<File> find(DownloadsVideo downloadsVideo) {
         List<File> files = new ArrayList<>();
         if (downloadsVideo.getFile().getParent() != pathProvider.getDownloadsPath()) {
-            addSubtitleByExtension(files, downloadsVideo.getFile().getParent(), subtitleExtensionsProvider.getExtensions());
+            addSubtitleByExtension(files, downloadsVideo.getFile().getParent(), Arrays.asList(subtitleExtensionsProvider.getExtensions()));
         }
         return files;
     }

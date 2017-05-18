@@ -7,10 +7,12 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import net.cserny.videos.mover.ui.model.DownloadsVideo;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by Leonardo Cserny on 18.03.2017.
  */
+@Service
 public class ComponentConfigurer
 {
     @SuppressWarnings("unchecked")

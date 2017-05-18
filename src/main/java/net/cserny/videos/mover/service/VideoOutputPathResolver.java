@@ -5,6 +5,8 @@ import net.cserny.videos.mover.service.provider.SystemPathProvider;
 import net.cserny.videos.mover.ui.model.DownloadsVideo;
 import org.simmetrics.StringMetric;
 import org.simmetrics.metrics.StringMetrics;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.regex.Matcher;
@@ -13,15 +15,23 @@ import java.util.regex.Pattern;
 /**
  * Created by leonardo on 13.05.2017.
  */
+@Service
 public class VideoOutputPathResolver
 {
     public static final double ACCEPTED_SEARCH_COEFFICIENT = 0.87;
 
-    private SystemPathProvider pathProvider;
     private Pattern videoPattern = Pattern.compile("(.*)(\\d{4})");
+    private SystemPathProvider pathProvider;
+    private VideoNameTrimmer nameTrimmer;
 
-    public VideoOutputPathResolver(SystemPathProvider pathProvider) {
+    @Autowired
+    public void setPathProvider(SystemPathProvider pathProvider) {
         this.pathProvider = pathProvider;
+    }
+
+    @Autowired
+    public void setNameTrimmer(VideoNameTrimmer nameTrimmer) {
+        this.nameTrimmer = nameTrimmer;
     }
 
     public String resolve(DownloadsVideo downloadsVideo) {
@@ -69,9 +79,8 @@ public class VideoOutputPathResolver
     }
 
     private String retrieveTrimmedVideoName(DownloadsVideo downloadsVideo) {
-        VideoNameTrimmer trimmer = new VideoNameTrimmer();
         String videoName = removeExtension(downloadsVideo.getFile().getName());
-        return trimmer.trim(videoName);
+        return nameTrimmer.trim(videoName);
     }
 
     private String stripSpecialChars(String videoName) {
