@@ -2,6 +2,8 @@ package net.cserny.videos.mover.service.provider;
 
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+
 /**
  * Created by Leonardo Cserny on 18.10.2016.
  */
@@ -12,11 +14,7 @@ public class SystemPathProvider
     private String moviePath;
     private String tvShowPath;
 
-    public SystemPathProvider()
-    {
-        initDefaultPaths();
-    }
-
+    @PostConstruct
     private void initDefaultPaths() {
         String prefix = "/mnt/Data/";
         String osName = System.getProperty("os.name");

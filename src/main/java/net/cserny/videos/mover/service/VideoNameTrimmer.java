@@ -1,16 +1,9 @@
 package net.cserny.videos.mover.service;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
+import net.cserny.videos.mover.service.provider.VideoNameProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,19 +13,15 @@ import java.util.regex.Pattern;
 @Service
 public class VideoNameTrimmer
 {
-    @Value("#{'${video.name.parts}'.split(';')}")
-    private String[] names;
+    private VideoNameProvider videoNameProvider;
 
-    public String[] getNames() {
-        return names;
-    }
-
-    public void setNames(String[] names) {
-        this.names = names;
+    @Autowired
+    public void setVideoNameProvider(VideoNameProvider videoNameProvider) {
+        this.videoNameProvider = videoNameProvider;
     }
 
     public String trim(String videoName) {
-        for (String part : names) {
+        for (String part : videoNameProvider.getNames()) {
             Pattern compile = Pattern.compile("(?i)(" + part + ")");
             Matcher matcher = compile.matcher(videoName);
             if (!part.isEmpty() && matcher.find()) {

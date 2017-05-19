@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.PropertySource;
 
 import java.io.IOException;
 
@@ -16,6 +17,7 @@ import java.io.IOException;
  * Created by Leonardo Cserny on 16.10.2016.
  */
 @SpringBootApplication
+@PropertySource("classpath:/application.properties")
 public class VideosMoverApplication extends Application
 {
     private ConfigurableApplicationContext context;
