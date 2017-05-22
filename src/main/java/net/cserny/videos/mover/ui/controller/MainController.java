@@ -1,11 +1,13 @@
 package net.cserny.videos.mover.ui.controller;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -34,6 +36,8 @@ public class MainController implements Initializable
 {
     @FXML
     private VBox container;
+    @FXML
+    private ImageView loadingImage;
     @FXML
     private TextField downloadsPathTextField;
     @FXML
@@ -93,12 +97,19 @@ public class MainController implements Initializable
     }
 
     public void loadTableView() {
-        ObservableList<DownloadsVideo> videoItems = tableView.getItems();
-        videoItems.clear();
-        for (File videoFile : videoScanner.scan(pathProvider.getDownloadsPath())) {
-            videoItems.add(convertFileToDownloadsVideo(videoFile));
-        }
-        videoItems.sort(Comparator.comparing(video -> video.getFileName().toLowerCase()));
+        loadingImage.setVisible(true);
+
+        Runnable expensiveTask = () -> {
+            ObservableList<DownloadsVideo> videoItems = tableView.getItems();
+            videoItems.clear();
+            for (File videoFile : videoScanner.scan(pathProvider.getDownloadsPath())) {
+                videoItems.add(convertFileToDownloadsVideo(videoFile));
+            }
+            videoItems.sort(Comparator.comparing(video -> video.getFileName().toLowerCase()));
+            Platform.runLater(() -> { loadingImage.setVisible(false); });
+        };
+
+        new Thread(expensiveTask).start();
     }
 
     public void moveVideos(ActionEvent actionEvent) {
