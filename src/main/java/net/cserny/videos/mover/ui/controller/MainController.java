@@ -2,6 +2,7 @@ package net.cserny.videos.mover.ui.controller;
 
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Leonardo Cserny on 16.10.2016.
@@ -106,7 +108,10 @@ public class MainController implements Initializable
                 videoItems.add(convertFileToDownloadsVideo(videoFile));
             }
             videoItems.sort(Comparator.comparing(video -> video.getFileName().toLowerCase()));
-            Platform.runLater(() -> { loadingImage.setVisible(false); });
+            Platform.runLater(() -> {
+                tableView.refresh();
+                loadingImage.setVisible(false);
+            });
         };
 
         new Thread(expensiveTask).start();
