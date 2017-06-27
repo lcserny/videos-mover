@@ -1,7 +1,9 @@
 package net.cserny.videos.mover.ui.controller;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -98,20 +100,16 @@ public class MainController implements Initializable
         tvShowPathTextField.setText(pathProvider.getTvShowPath());
     }
 
-    public void loadTableView() {
+    public synchronized void loadTableView() {
         loadingImage.setVisible(true);
 
         Runnable expensiveTask = () -> {
-            ObservableList<DownloadsVideo> videoItems = tableView.getItems();
-            videoItems.clear();
+            ObservableList<DownloadsVideo> items = FXCollections.observableArrayList();
             for (File videoFile : videoScanner.scan(pathProvider.getDownloadsPath())) {
-                videoItems.add(convertFileToDownloadsVideo(videoFile));
+                items.add(convertFileToDownloadsVideo(videoFile));
             }
-            videoItems.sort(Comparator.comparing(video -> video.getFileName().toLowerCase()));
-            Platform.runLater(() -> {
-                tableView.refresh();
-                loadingImage.setVisible(false);
-            });
+            tableView.setItems(new SortedList<>(items, Comparator.comparing(DownloadsVideo::getFileName)));
+            loadingImage.setVisible(false);
         };
 
         new Thread(expensiveTask).start();
