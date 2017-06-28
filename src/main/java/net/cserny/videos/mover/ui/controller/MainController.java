@@ -108,7 +108,8 @@ public class MainController implements Initializable
             for (File videoFile : videoScanner.scan(pathProvider.getDownloadsPath())) {
                 items.add(convertFileToDownloadsVideo(videoFile));
             }
-            tableView.setItems(new SortedList<>(items, Comparator.comparing(DownloadsVideo::getFileName)));
+            items.sort(Comparator.comparing(DownloadsVideo::getFileName));
+            tableView.setItems(items);
             loadingImage.setVisible(false);
         };
 
