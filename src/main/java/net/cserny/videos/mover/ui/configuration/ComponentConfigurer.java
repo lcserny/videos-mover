@@ -23,22 +23,22 @@ public class ComponentConfigurer
         tableView.setMinHeight(350);
 
         TableColumn<DownloadsVideo, String> nameCol = new TableColumn<>("Name");
-        nameCol.setMinWidth(335);
+        nameCol.setMinWidth(250);
         nameCol.setCellValueFactory(new PropertyValueFactory<>("fileName"));
         nameCol.setCellFactory(TextFieldTableCell.forTableColumn());
 
         TableColumn<DownloadsVideo, Boolean> movieCol = new TableColumn<>("Is Movie");
-        movieCol.setMinWidth(80);
+        movieCol.setMinWidth(75);
         movieCol.setCellValueFactory(new PropertyValueFactory<>("movie"));
         movieCol.setCellFactory(param -> new CheckBoxTableCell<>());
 
         TableColumn<DownloadsVideo, Boolean> tvCol = new TableColumn<>("Is TvShow");
-        tvCol.setMinWidth(80);
+        tvCol.setMinWidth(75);
         tvCol.setCellValueFactory(new PropertyValueFactory<>("tvShow"));
         tvCol.setCellFactory(param -> new CheckBoxTableCell<>());
 
         TableColumn<DownloadsVideo, String> outputCol = new TableColumn<>("Output");
-        outputCol.setMinWidth(265);
+        outputCol.setMinWidth(350);
         outputCol.setCellValueFactory(new PropertyValueFactory<>("outputPath"));
         outputCol.setCellFactory(TextFieldTableCell.forTableColumn());
 
