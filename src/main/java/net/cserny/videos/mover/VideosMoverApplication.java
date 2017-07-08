@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.PropertySource;
@@ -17,36 +18,23 @@ import java.io.IOException;
  * Created by Leonardo Cserny on 16.10.2016.
  */
 @SpringBootApplication
-@PropertySource("classpath:/application.properties")
-public class VideosMoverApplication extends Application
+public class VideosMoverApplication
 {
-    private ConfigurableApplicationContext context;
-    private Parent root;
-
     public static void main(String[] args) throws IOException {
-        launch(VideosMoverApplication.class, args);
+        SpringApplication.run(VideosMoverApplication.class, args);
+        openBrowser("http://localhost:9201");
     }
 
-    @Override
-    public void init() throws Exception {
-        context = SpringApplication.run(VideosMoverApplication.class);
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
-        loader.setControllerFactory(context::getBean);
-        root = loader.load();
-    }
+    private static void openBrowser(String url) throws IOException {
+        String os = System.getProperty("os.name").toLowerCase();
+        Runtime runtime = Runtime.getRuntime();
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        Scene scene = new Scene(root, 800, 600);
-        primaryStage.setTitle("Downloads Video Mover");
-        primaryStage.setScene(scene);
-        primaryStage.centerOnScreen();
-        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/pomodoro.png")));
-        primaryStage.show();
-    }
-
-    @Override
-    public void stop() throws Exception {
-        context.stop();
+        if (os.contains("nix") || os.contains("nux")) {
+            runtime.exec("xdg-open " + url);
+        } else if (os.contains("win")) {
+            runtime.exec( "rundll32 url.dll,FileProtocolHandler " + url);
+        } else if (os.contains("mac")) {
+            runtime.exec( "open" + url);
+        }
     }
 }

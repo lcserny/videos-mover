@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header :: copy"></head>
+
+<body>
+<div class="container">
+    <form class="form" th:action="@{/change-paths}">
+        <div class="form-group">
+            <label for="downloads-path" class="col-md-2">Downloads Path</label>
+            <div class="col-md-10">
+                <input class="form-control" type="text" th:value="${downloadsPath}" id="downloads-path" name="downloadsPath"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="movies-path" class="col-md-2">Movies Path</label>
+            <div class="col-md-10">
+                <input class="form-control" type="text" th:value="${moviesPath}" id="movies-path" name="moviesPath"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="tvshow-path" class="col-md-2">TV Shows Path</label>
+            <div class="col-md-10">
+                <input class="form-control" type="text" th:value="${tvShowPath}" id="tvshow-path" name="tvShowPath"/>
+            </div>
+        </div>
+
+        <input type="submit" class="btn btn-info" value="Change Paths"/>
+    </form>
+
+    <a class="btn btn-default" th:href="@{/load-videos}">Load Videos</a>
+
+    <form class="form" th:action="@{/move-videos}">
+        <input type="submit" class="btn btn-warning" value="Move Selected Videos"/>
+
+        <table class="table table-striped table-hover">
+            <tr>
+                <th>Name</th>
+                <th>TV</th>
+                <th>Movie</th>
+                <th>Output</th>
+            </tr>
+
+            <p>Total = <span th:text="${totalVideos}"></span>, if size is 0 then show user to click button above</p>
+
+            <tr th:each="video : ${videos}">
+                <td th:text="${video.name}"></td>
+                <td>
+                    <input type="checkbox" th:value="${video.id}" name="tvShowChecked"/>
+                </td>
+                <td>
+                    <input type="checkbox" th:value="${video.id}" name="movieChecked"/>
+                </td>
+                <td>
+                    When TV checked with JS set output to tvOutput, else set to moviesOutput + add an edit button that does ajax to update in db the path + don't allow both checkboxes to be checked for same row
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<div th:replace="footer :: copy"></div>
+</body>
+</html>

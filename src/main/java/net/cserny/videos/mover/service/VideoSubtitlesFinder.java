@@ -31,10 +31,10 @@ public class VideoSubtitlesFinder
         this.subtitleExtensionsProvider = subtitleExtensionsProvider;
     }
 
-    public List<File> find(DownloadsVideo downloadsVideo) {
+    public List<File> find(File videoFile) {
         List<File> files = new ArrayList<>();
-        if (downloadsVideo.getFile().getParent() != pathProvider.getDownloadsPath()) {
-            addSubtitleByExtension(files, downloadsVideo.getFile().getParent(), Arrays.asList(subtitleExtensionsProvider.getExtensions()));
+        if (videoFile.getParent() != pathProvider.getDownloadsPath()) {
+            addSubtitleByExtension(files, videoFile.getParent(), Arrays.asList(subtitleExtensionsProvider.getExtensions()));
         }
         return files;
     }

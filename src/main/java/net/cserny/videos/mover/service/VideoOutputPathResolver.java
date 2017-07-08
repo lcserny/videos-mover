@@ -34,18 +34,18 @@ public class VideoOutputPathResolver
         this.nameTrimmer = nameTrimmer;
     }
 
-    public String resolve(DownloadsVideo downloadsVideo) {
-        VideoNameDTO videoName = processVideoName(downloadsVideo);
-        if (downloadsVideo.isMovie()) {
-            return processOutputVideoFolder(pathProvider.getMoviePath(), videoName).getAbsolutePath();
-        } else if (downloadsVideo.isTvShow()) {
-            return processOutputVideoFolder(pathProvider.getTvShowPath(), videoName).getAbsolutePath();
-        }
-        return null;
+    public String resolveTvShow(String fileName) {
+        VideoNameDTO videoName = processVideoName(fileName);
+        return processOutputVideoFolder(pathProvider.getTvShowPath(), videoName).getAbsolutePath();
     }
 
-    private VideoNameDTO processVideoName(DownloadsVideo downloadsVideo) {
-        String videoName = retrieveTrimmedVideoName(downloadsVideo);
+    public String resolveMovies(String fileName) {
+        VideoNameDTO videoName = processVideoName(fileName);
+        return processOutputVideoFolder(pathProvider.getMoviePath(), videoName).getAbsolutePath();
+    }
+
+    private VideoNameDTO processVideoName(String fileName) {
+        String videoName = retrieveTrimmedVideoName(fileName);
         Integer year = null;
 
         Matcher matcher = videoPattern.matcher(videoName);
@@ -78,8 +78,8 @@ public class VideoOutputPathResolver
         return new File(path + "/" + videoName.getFormattedName());
     }
 
-    private String retrieveTrimmedVideoName(DownloadsVideo downloadsVideo) {
-        String videoName = removeExtension(downloadsVideo.getFile().getName());
+    private String retrieveTrimmedVideoName(String fileName) {
+        String videoName = removeExtension(fileName);
         return nameTrimmer.trim(videoName);
     }
 
