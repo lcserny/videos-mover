@@ -37,7 +37,7 @@ public class VideosMoverApplication extends Application
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root);
         primaryStage.setTitle("Downloads Video Mover");
         primaryStage.setScene(scene);
         primaryStage.centerOnScreen();

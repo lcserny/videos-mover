@@ -19,8 +19,6 @@ public class ComponentConfigurer
     public void configure(TableView tableView) {
         tableView.setEditable(true);
         tableView.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
-        tableView.setMinWidth(780);
-        tableView.setMinHeight(350);
 
         TableColumn<DownloadsVideo, String> nameCol = new TableColumn<>("Name");
         nameCol.setMinWidth(250);
@@ -38,7 +36,7 @@ public class ComponentConfigurer
         tvCol.setCellFactory(param -> new CheckBoxTableCell<>());
 
         TableColumn<DownloadsVideo, String> outputCol = new TableColumn<>("Output");
-        outputCol.setMinWidth(350);
+        outputCol.setMinWidth(370);
         outputCol.setCellValueFactory(new PropertyValueFactory<>("outputPath"));
         outputCol.setCellFactory(TextFieldTableCell.forTableColumn());
 

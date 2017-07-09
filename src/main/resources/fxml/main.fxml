@@ -4,79 +4,74 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="container" minHeight="600" minWidth="800" style="-fx-pref-height: 600; -fx-pref-width: 800; -fx-font-size: 12;" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.cserny.videos.mover.ui.controller.MainController">
+<VBox fx:id="container" stylesheets="/css/main.css" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.cserny.videos.mover.ui.controller.MainController">
    <children>
-       <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-pref-height: 75;">
+       <HBox styleClass="top-hbox">
            <children>
-               <BorderPane prefHeight="200.0" prefWidth="200.0" style="-fx-pref-width: 550; -fx-pref-height: 100;">
+               <BorderPane styleClass="top-left-borderpane">
                    <center>
-                       <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-padding: 25 0 25 25;" BorderPane.alignment="CENTER">
+                       <HBox styleClass="top-left-borderpane-center-hbox" BorderPane.alignment="CENTER">
                            <children>
-                               <Button fx:id="chooseButton" alignment="CENTER" mnemonicParsing="false" onAction="#setDownloadsPath" style="-fx-min-width: 50;" text="Change" />
-                               <TextField fx:id="downloadsPathTextField" alignment="CENTER_LEFT" disable="true" style="-fx-pref-width: 325;" />
+                               <Button fx:id="chooseButton" alignment="CENTER" mnemonicParsing="false" onAction="#setDownloadsPath" styleClass="default-button" text="Change" />
+                               <TextField fx:id="downloadsPathTextField" alignment="CENTER_LEFT" disable="true" />
                            </children>
                        </HBox>
                    </center>
-               <right>
-                  <ImageView  fx:id="loadingImage" fitHeight="65.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" visible="false" BorderPane.alignment="CENTER">
-                     <image>
-                        <Image url="@/images/loading.gif" />
-                     </image>
-                  </ImageView>
-               </right>
+                   <right>
+                       <Pane fx:id="loadingImagePane" BorderPane.alignment="CENTER" />
+                   </right>
                </BorderPane>
-               <BorderPane prefHeight="200.0" prefWidth="200.0">
+               <BorderPane styleClass="top-right-borderpane">
                    <center>
-                       <Button fx:id="scanButton" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#loadTableView" style="-fx-padding: 10 25;" text="Scan for Videos" textAlignment="CENTER" BorderPane.alignment="CENTER" />
+                       <Button fx:id="scanButton" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#loadTableView" text="Scan for Videos" textAlignment="CENTER" BorderPane.alignment="CENTER" />
                    </center>
             </BorderPane>
            </children>
        </HBox>
        
-       <ScrollPane>
+       <ScrollPane id="main-table">
           <content>
               <TableView fx:id="tableView" />
           </content>
        </ScrollPane>
 
-      <HBox prefHeight="100.0" prefWidth="200.0">
-         <children>
-            <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-pref-width: 500;">
-               <children>
-                  <BorderPane prefHeight="200.0" prefWidth="200.0">
+       <HBox styleClass="bottom-hbox">
+           <children>
+               <VBox styleClass="bottom-hbox-left-vbox">
+                   <children>
+                      <BorderPane styleClass="bottom-hbox-left-vbox-top-borderpane">
+                         <center>
+                            <HBox alignment="CENTER" styleClass="bottom-hbox-left-vbox-top-borderpane-center" BorderPane.alignment="CENTER">
+                               <children>
+                                  <Button fx:id="chooseMoviePathButton" mnemonicParsing="false" onAction="#setMoviePath" styleClass="default-button" text="Movies Path" />
+                                  <TextField fx:id="moviePathTextField" disable="true" />
+                               </children>
+                            </HBox>
+                         </center>
+                      </BorderPane>
+                      <BorderPane styleClass="bottom-hbox-left-vbox-bottom-borderpane">
+                         <center>
+                            <HBox alignment="CENTER" styleClass="bottom-hbox-left-vbox-bottom-borderpane-center" BorderPane.alignment="CENTER">
+                               <children>
+                                  <Button fx:id="chooseTvShowPathButton" mnemonicParsing="false" onAction="#setTvShowPath" styleClass="default-button" text="TvShow Path" />
+                                  <TextField fx:id="tvShowPathTextField" disable="true" />
+                               </children>
+                            </HBox>
+                         </center>
+                      </BorderPane>
+                   </children>
+               </VBox>
+               <BorderPane styleClass="bottom-hbox-borderpane">
                      <center>
-                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                           <children>
-                              <Button fx:id="chooseMoviePathButton" mnemonicParsing="false" onAction="#setMoviePath" text="Movies Path" />
-                              <TextField fx:id="moviePathTextField" disable="true" style="-fx-pref-width: 300;" />
-                           </children>
-                        </HBox>
+                         <Button fx:id="moveButton" mnemonicParsing="false" onAction="#moveVideos" styleClass="default-button" text="Move Videos!" BorderPane.alignment="CENTER" />
                      </center>
-                  </BorderPane>
-                  <BorderPane prefHeight="200.0" prefWidth="200.0">
-                     <center>
-                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                           <children>
-                              <Button fx:id="chooseTvShowPathButton" mnemonicParsing="false" onAction="#setTvShowPath" text="TvShow Path" />
-                              <TextField fx:id="tvShowPathTextField" disable="true" style="-fx-pref-width: 300;" />
-                           </children>
-                        </HBox>
-                     </center>
-                  </BorderPane>
-               </children>
-            </VBox>
-             <BorderPane prefHeight="200.0" prefWidth="200.0" style="-fx-pref-height: 100; -fx-pref-width: 250;">
-                 <center>
-                     <Button fx:id="moveButton" mnemonicParsing="false" onAction="#moveVideos" style="-fx-padding: 30 75;" text="Move Videos!" BorderPane.alignment="CENTER" />
-                 </center>
-             </BorderPane>
-         </children>
+                </BorderPane>
+           </children>
       </HBox>
    </children>
 </VBox>

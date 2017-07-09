@@ -11,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -41,7 +42,7 @@ public class MainController implements Initializable
     @FXML
     private VBox container;
     @FXML
-    private ImageView loadingImage;
+    private Pane loadingImagePane;
     @FXML
     private TextField downloadsPathTextField;
     @FXML
@@ -101,7 +102,7 @@ public class MainController implements Initializable
     }
 
     public synchronized void loadTableView() {
-        loadingImage.setVisible(true);
+        loadingImagePane.setVisible(true);
 
         Runnable expensiveTask = () -> {
             ObservableList<DownloadsVideo> items = FXCollections.observableArrayList();
@@ -110,7 +111,7 @@ public class MainController implements Initializable
             }
             items.sort(Comparator.comparing(video -> video.getFileName().toLowerCase()));
             tableView.setItems(items);
-            loadingImage.setVisible(false);
+            loadingImagePane.setVisible(false);
         };
 
         new Thread(expensiveTask).start();
