@@ -10,7 +10,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
@@ -40,9 +42,9 @@ import java.util.concurrent.ExecutionException;
 public class MainController implements Initializable
 {
     @FXML
-    private VBox container;
+    private BorderPane container;
     @FXML
-    private Pane loadingImagePane;
+    private ImageView loadingImage;
     @FXML
     private TextField downloadsPathTextField;
     @FXML
@@ -102,7 +104,7 @@ public class MainController implements Initializable
     }
 
     public synchronized void loadTableView() {
-        loadingImagePane.setVisible(true);
+        loadingImage.setImage(new Image(getClass().getResourceAsStream("/images/loading.gif")));
 
         Runnable expensiveTask = () -> {
             ObservableList<DownloadsVideo> items = FXCollections.observableArrayList();
@@ -111,7 +113,7 @@ public class MainController implements Initializable
             }
             items.sort(Comparator.comparing(video -> video.getFileName().toLowerCase()));
             tableView.setItems(items);
-            loadingImagePane.setVisible(false);
+            loadingImage.setImage(new Image(getClass().getResourceAsStream("/images/scan-button.png")));
         };
 
         new Thread(expensiveTask).start();

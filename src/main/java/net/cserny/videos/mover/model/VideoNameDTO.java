@@ -30,10 +30,6 @@ public class VideoNameDTO
 
     public String getFormattedName()
     {
-        String formattedName = name;
-        if (year != null) {
-            formattedName += " (" + year + ")";
-        }
-        return formattedName;
+        return year != null ? String.format("%s (%d)", name, year) : name;
     }
 }

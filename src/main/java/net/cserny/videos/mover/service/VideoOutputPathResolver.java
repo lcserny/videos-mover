@@ -52,7 +52,7 @@ public class VideoOutputPathResolver
         if (matcher.find()) {
             videoName = matcher.group(1);
             String yearString = matcher.group(2);
-            if (yearString != null) {
+            if (yearString != null && downloadsVideo.isMovie()) {
                 year = Integer.valueOf(yearString);
             }
         }

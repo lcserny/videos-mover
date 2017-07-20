@@ -4,74 +4,65 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="container" stylesheets="/css/main.css" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.cserny.videos.mover.ui.controller.MainController">
-   <children>
-       <HBox styleClass="top-hbox">
-           <children>
-               <BorderPane styleClass="top-left-borderpane">
-                   <center>
-                       <HBox styleClass="top-left-borderpane-center-hbox" BorderPane.alignment="CENTER">
-                           <children>
-                               <Button fx:id="chooseButton" alignment="CENTER" mnemonicParsing="false" onAction="#setDownloadsPath" styleClass="default-button" text="Change" />
-                               <TextField fx:id="downloadsPathTextField" alignment="CENTER_LEFT" disable="true" />
-                           </children>
-                       </HBox>
-                   </center>
-                   <right>
-                       <Pane fx:id="loadingImagePane" BorderPane.alignment="CENTER" />
-                   </right>
-               </BorderPane>
-               <BorderPane styleClass="top-right-borderpane">
-                   <center>
-                       <Button fx:id="scanButton" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#loadTableView" text="Scan for Videos" textAlignment="CENTER" BorderPane.alignment="CENTER" />
-                   </center>
-            </BorderPane>
-           </children>
-       </HBox>
-       
-       <ScrollPane id="main-table">
-          <content>
-              <TableView fx:id="tableView" />
-          </content>
+<BorderPane fx:id="container" prefHeight="650.0" prefWidth="900.0" styleClass="container" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.cserny.videos.mover.ui.controller.MainController">
+   <center>
+   
+          <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="middle-table-pane" BorderPane.alignment="CENTER">
+           <TableView fx:id="tableView" />
        </ScrollPane>
-
-       <HBox styleClass="bottom-hbox">
-           <children>
-               <VBox styleClass="bottom-hbox-left-vbox">
-                   <children>
-                      <BorderPane styleClass="bottom-hbox-left-vbox-top-borderpane">
-                         <center>
-                            <HBox alignment="CENTER" styleClass="bottom-hbox-left-vbox-top-borderpane-center" BorderPane.alignment="CENTER">
-                               <children>
-                                  <Button fx:id="chooseMoviePathButton" mnemonicParsing="false" onAction="#setMoviePath" styleClass="default-button" text="Movies Path" />
-                                  <TextField fx:id="moviePathTextField" disable="true" />
-                               </children>
-                            </HBox>
-                         </center>
-                      </BorderPane>
-                      <BorderPane styleClass="bottom-hbox-left-vbox-bottom-borderpane">
-                         <center>
-                            <HBox alignment="CENTER" styleClass="bottom-hbox-left-vbox-bottom-borderpane-center" BorderPane.alignment="CENTER">
-                               <children>
-                                  <Button fx:id="chooseTvShowPathButton" mnemonicParsing="false" onAction="#setTvShowPath" styleClass="default-button" text="TvShow Path" />
-                                  <TextField fx:id="tvShowPathTextField" disable="true" />
-                               </children>
-                            </HBox>
-                         </center>
-                      </BorderPane>
-                   </children>
-               </VBox>
-               <BorderPane styleClass="bottom-hbox-borderpane">
-                     <center>
-                         <Button fx:id="moveButton" mnemonicParsing="false" onAction="#moveVideos" styleClass="default-button" text="Move Videos!" BorderPane.alignment="CENTER" />
-                     </center>
-                </BorderPane>
-           </children>
-      </HBox>
-   </children>
-</VBox>
+   </center>
+   <top>
+      <BorderPane prefHeight="100.0" prefWidth="900.0" styleClass="top-container" BorderPane.alignment="CENTER">
+         <left>
+              <HBox alignment="CENTER" prefHeight="75.0" prefWidth="500.0" styleClass="downloads-path-container">
+                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#setDownloadsPath" prefHeight="30.0" prefWidth="140.0" styleClass="default-button, downloads-button" text="Downloads" />
+                  <TextField fx:id="downloadsPathTextField" disable="true" prefHeight="30.0" prefWidth="300.0" styleClass="downloads-text" />
+              </HBox>
+         </left>
+         <right>
+      
+                 <HBox alignment="CENTER" prefHeight="75.0" prefWidth="300.0" styleClass="scan-container" BorderPane.alignment="CENTER">
+                  <Button alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#loadTableView" prefHeight="60.0" prefWidth="250.0" styleClass="scan-button" text="Search Downloads" textAlignment="CENTER">
+                  <graphic>
+                      <ImageView fx:id="loadingImage" fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                          <image>
+                              <Image url="@../images/scan-button.png" />
+                          </image>
+                      </ImageView>
+                  </graphic>
+               </Button>
+              </HBox>
+         </right>
+      </BorderPane>
+   </top>
+   <bottom>
+      <BorderPane prefHeight="100.0" prefWidth="800.0" styleClass="bottom-container" BorderPane.alignment="CENTER">
+         <left>
+      
+                 <VBox alignment="CENTER" prefHeight="100.0" prefWidth="500.0" styleClass="paths-container" BorderPane.alignment="CENTER">
+                  <HBox alignment="CENTER" styleClass="movie-path-container">
+                      <Button mnemonicParsing="false" onAction="#setMoviePath" prefHeight="30.0" prefWidth="140.0" styleClass="default-button, movies-button" text="Movies" />
+                      <TextField fx:id="moviePathTextField" disable="true" prefHeight="30.0" prefWidth="300.0" styleClass="movies-text" />
+                  </HBox>
+      
+                     <HBox alignment="CENTER" styleClass="tv-path-container">
+                      <Button mnemonicParsing="false" onAction="#setTvShowPath" prefHeight="30.0" prefWidth="140.0" styleClass="default-button, tv-button" text="TV Shows" />
+                      <TextField fx:id="tvShowPathTextField" disable="true" prefHeight="30.0" prefWidth="300.0" styleClass="tv-text" />
+                  </HBox>
+              </VBox>
+         </left>
+         <right>
+      
+                 <HBox alignment="CENTER" prefHeight="100.0" prefWidth="300.0" styleClass="move-container" BorderPane.alignment="CENTER">
+                  <Button mnemonicParsing="false" onAction="#moveVideos" prefHeight="60.0" prefWidth="250.0" styleClass="default-button, move-button" text="Move Selected Files" />
+              </HBox>
+         </right>
+      </BorderPane>
+   </bottom>
+</BorderPane>
