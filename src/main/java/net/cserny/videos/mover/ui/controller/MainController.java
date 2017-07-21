@@ -5,6 +5,8 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -24,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -57,42 +60,18 @@ public class MainController implements Initializable
     @FXML
     private TableColumn<DownloadsVideo, String> outputCol;
 
+    @Autowired
     private ComponentConfigurer componentConfigurer;
+    @Autowired
     private SystemPathProvider pathProvider;
+    @Autowired
     private VideoScanner videoScanner;
+    @Autowired
     private VideoMover videoMover;
+    @Autowired
     private VideoSubtitlesFinder videoSubtitlesFinder;
+    @Autowired
     private VideoOutputPathResolver videoOutputPathResolver;
-
-    @Autowired
-    public void setComponentConfigurer(ComponentConfigurer componentConfigurer) {
-        this.componentConfigurer = componentConfigurer;
-    }
-
-    @Autowired
-    public void setVideoMover(VideoMover videoMover) {
-        this.videoMover = videoMover;
-    }
-
-    @Autowired
-    public void setVideoOutputPathResolver(VideoOutputPathResolver videoOutputPathResolver) {
-        this.videoOutputPathResolver = videoOutputPathResolver;
-    }
-
-    @Autowired
-    public void setPathProvider(SystemPathProvider pathProvider) {
-        this.pathProvider = pathProvider;
-    }
-
-    @Autowired
-    public void setVideoScanner(VideoScanner videoScanner) {
-        this.videoScanner = videoScanner;
-    }
-
-    @Autowired
-    public void setVideoSubtitlesFinder(VideoSubtitlesFinder videoSubtitlesFinder) {
-        this.videoSubtitlesFinder = videoSubtitlesFinder;
-    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -107,30 +86,94 @@ public class MainController implements Initializable
     }
 
     public synchronized void loadTableView() {
-        loadingImage.setImage(new Image(getClass().getResourceAsStream("/images/loading.gif")));
-
+        showLoadingGif();
         Runnable expensiveTask = () -> {
-            ObservableList<DownloadsVideo> items = FXCollections.observableArrayList();
-            for (File videoFile : videoScanner.scan(pathProvider.getDownloadsPath())) {
-                items.add(convertFileToDownloadsVideo(videoFile));
+            if (pathProvider.getDownloadsPath() != null) {
+                ObservableList<DownloadsVideo> items = FXCollections.observableArrayList();
+                for (File videoFile : videoScanner.scan(pathProvider.getDownloadsPath())) {
+                    items.add(convertFileToDownloadsVideo(videoFile));
+                }
+                items.sort(Comparator.comparing(video -> video.getFileName().toLowerCase()));
+                tableView.setItems(items);
             }
-            items.sort(Comparator.comparing(video -> video.getFileName().toLowerCase()));
-            tableView.setItems(items);
-            loadingImage.setImage(new Image(getClass().getResourceAsStream("/images/scan-button.png")));
+            restoreDefaultScanImage();
         };
-
         new Thread(expensiveTask).start();
+
+        checkDownloadsFolderAvailability();
+    }
+
+    private boolean checkDownloadsFolderAvailability() {
+        if (pathProvider.getDownloadsPath() == null) {
+            showPopupMessage(AlertType.ERROR, "Downloads folder doesn't exist, please set correct path and try again.", "Downloads Error");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean checkMoviesFolderAvilability() {
+        if (pathProvider.getMoviePath() == null) {
+            showPopupMessage(AlertType.ERROR, "Movies folder doesn't exist, please set correct path and try again.", "Movies Error");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean checkTvShowsFolderAvailability() {
+        if (pathProvider.getTvShowPath() == null) {
+            showPopupMessage(AlertType.ERROR, "TVShows folder doesn't exist, please set correct path and try again.", "TVShows Error");
+            return false;
+        }
+        return true;
+    }
+
+    private void showPopupMessage(AlertType type, String message, String title) {
+        Alert alert = new Alert(type, message);
+        alert.setHeaderText(null);
+        alert.setTitle(title);
+        alert.show();
+    }
+
+    private void changeLoadingImage(String imageName) {
+        loadingImage.setImage(new Image(getClass().getResourceAsStream("/images/" + imageName)));
+    }
+
+    private void restoreDefaultScanImage() {
+        changeLoadingImage("scan-button.png");
+    }
+
+    private void showLoadingGif() {
+        changeLoadingImage("loading.gif");
     }
 
     public void moveVideos(ActionEvent actionEvent) {
+        boolean errorOccurred = false;
         List<DownloadsVideo> toBeRemoved = new ArrayList<>();
         for (DownloadsVideo downloadsVideo : tableView.getItems()) {
             if (downloadsVideo.isMovie() || downloadsVideo.isTvShow()) {
-                videoMover.move(downloadsVideo);
-                toBeRemoved.add(downloadsVideo);
+                try {
+                    videoMover.move(downloadsVideo);
+                    toBeRemoved.add(downloadsVideo);
+                } catch (IOException e) {
+                    errorOccurred = true;
+                    showPopupMessage(AlertType.ERROR, String.format("Failed to move video file: %s, please check!", downloadsVideo.getFileName()), "Move Failed!");
+                    break;
+                }
             }
         }
         tableView.getItems().removeAll(toBeRemoved);
+
+        if (!errorOccurred) {
+            showMoveCompletionMessage(!toBeRemoved.isEmpty());
+        }
+    }
+
+    private void showMoveCompletionMessage(boolean filesMoved) {
+        if (filesMoved) {
+            showPopupMessage(AlertType.INFORMATION, "Selected video files have been moved successfully!", "Move Successful!");
+        } else {
+            showPopupMessage(AlertType.INFORMATION, "No video files have been selected, nothing was moved...", "Nothing to Move");
+        }
     }
 
     public void setDownloadsPath(ActionEvent actionEvent) {
@@ -168,13 +211,17 @@ public class MainController implements Initializable
         downloadsVideo.setTvShow(false);
 
         downloadsVideo.movieProperty().addListener((obs, prevCheck, currentCheck) -> {
-            downloadsVideo.setMovie(currentCheck);
-            downloadsVideo.setOutputPath(currentCheck ? videoOutputPathResolver.resolve(downloadsVideo) : "");
+            if (checkMoviesFolderAvilability()) {
+                downloadsVideo.setMovie(currentCheck);
+                downloadsVideo.setOutputPath(currentCheck ? videoOutputPathResolver.resolve(downloadsVideo) : "");
+            }
         });
 
         downloadsVideo.tvShowProperty().addListener((obs, prevCheck, currentCheck) -> {
-            downloadsVideo.setTvShow(currentCheck);
-            downloadsVideo.setOutputPath(currentCheck ? videoOutputPathResolver.resolve(downloadsVideo) : "");
+            if (checkTvShowsFolderAvailability()) {
+                downloadsVideo.setTvShow(currentCheck);
+                downloadsVideo.setOutputPath(currentCheck ? videoOutputPathResolver.resolve(downloadsVideo) : "");
+            }
         });
 
         downloadsVideo.setSubtitles(videoSubtitlesFinder.find(downloadsVideo));
@@ -183,10 +230,10 @@ public class MainController implements Initializable
     }
 
     private File getSelectedDirectory(String title, String path) {
-        File directory = new File(path);
+        File directory = path != null ? new File(path) : null;
         DirectoryChooser chooser = new DirectoryChooser();
         chooser.setTitle(title);
-        if (directory.exists()) {
+        if (directory != null && directory.exists()) {
             chooser.setInitialDirectory(directory);
         }
         return chooser.showDialog(getStage());

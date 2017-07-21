@@ -3,6 +3,7 @@ package net.cserny.videos.mover.service.provider;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 
 /**
  * Created by Leonardo Cserny on 18.10.2016.
@@ -16,15 +17,22 @@ public class SystemPathProvider
 
     @PostConstruct
     private void initDefaultPaths() {
-        String prefix = "/mnt/Data/";
-        String osName = System.getProperty("os.name");
-        if (osName.contains("Windows")) {
-            prefix = "D:/";
+        String prefix = processPrefix();
+        String downloadsDir = prefix + "Downloads";
+        String movieDir = prefix + "Movies/Movies";
+        String tvShowDir = prefix + "Movies/TV";
+
+        if (new File(downloadsDir).exists()) {
+            downloadsPath = downloadsDir;
         }
 
-        downloadsPath = prefix + "Downloads";
-        moviePath = prefix + "Movies/Movies";
-        tvShowPath = prefix + "Movies/TV";
+        if (new File(movieDir).exists()) {
+            moviePath = movieDir;
+        }
+
+        if (new File(tvShowDir).exists()) {
+            tvShowPath = tvShowDir;
+        }
     }
 
     public String getDownloadsPath() {
@@ -49,5 +57,15 @@ public class SystemPathProvider
 
     public void setTvShowPath(String tvShowPath) {
         this.tvShowPath = tvShowPath;
+    }
+
+    private String processPrefix() {
+        String prefix = "/mnt/Data/";
+        String osName = System.getProperty("os.name");
+        if (osName.contains("Windows")) {
+            prefix = "D:/";
+        }
+
+        return prefix;
     }
 }

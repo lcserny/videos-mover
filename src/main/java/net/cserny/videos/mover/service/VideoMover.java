@@ -13,7 +13,7 @@ import java.io.IOException;
 @Service
 public class VideoMover
 {
-    public void move(DownloadsVideo downloadsVideo) {
+    public void move(DownloadsVideo downloadsVideo) throws IOException {
         createFolder(new File(downloadsVideo.getOutputPath()));
 
         File newVideoFile = new File(downloadsVideo.getOutputPath() + "/" + downloadsVideo.getFileName());
@@ -21,13 +21,9 @@ public class VideoMover
             return;
         }
 
-        try {
-            FileUtils.moveFile(downloadsVideo.getFile(), newVideoFile);
-            for (File subtitle : downloadsVideo.getSubtitles()) {
-                FileUtils.moveFile(subtitle, new File(newVideoFile.getParent() + "/" + subtitle.getName()));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        FileUtils.moveFile(downloadsVideo.getFile(), newVideoFile);
+        for (File subtitle : downloadsVideo.getSubtitles()) {
+            FileUtils.moveFile(subtitle, new File(newVideoFile.getParent() + "/" + subtitle.getName()));
         }
     }
 

@@ -26,18 +26,10 @@ public class VideoScanner
     public static final int MIN_VIDEO_SIZE = 50 * 1024 * 1024;
 
     private Detector detector = new DefaultDetector(MimeTypes.getDefaultMimeTypes());
+    @Autowired
     private VideoMimeTypeProvider mimeTypeProvider;
+    @Autowired
     private VideoExcludePathsProvider excludePathsProvider;
-
-    @Autowired
-    public void setExcludePathsProvider(VideoExcludePathsProvider excludePathsProvider) {
-        this.excludePathsProvider = excludePathsProvider;
-    }
-
-    @Autowired
-    public void setMimeTypeProvider(VideoMimeTypeProvider mimeTypeProvider) {
-        this.mimeTypeProvider = mimeTypeProvider;
-    }
 
     public List<File> scan(String path) {
         List<File> videoFiles = new ArrayList<>();

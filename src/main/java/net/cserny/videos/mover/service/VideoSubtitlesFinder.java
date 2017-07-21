@@ -18,18 +18,10 @@ import java.util.List;
 @Service
 public class VideoSubtitlesFinder
 {
+    @Autowired
     private SystemPathProvider pathProvider;
+    @Autowired
     private SubtitleExtensionsProvider subtitleExtensionsProvider;
-
-    @Autowired
-    public void setPathProvider(SystemPathProvider pathProvider) {
-        this.pathProvider = pathProvider;
-    }
-
-    @Autowired
-    public void setSubtitleExtensionsProvider(SubtitleExtensionsProvider subtitleExtensionsProvider) {
-        this.subtitleExtensionsProvider = subtitleExtensionsProvider;
-    }
 
     public List<File> find(DownloadsVideo downloadsVideo) {
         List<File> files = new ArrayList<>();

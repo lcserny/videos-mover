@@ -20,19 +20,12 @@ public class VideoOutputPathResolver
 {
     public static final double ACCEPTED_SEARCH_COEFFICIENT = 0.87;
 
-    private Pattern videoPattern = Pattern.compile("(.*)(\\d{4})");
+    @Autowired
     private SystemPathProvider pathProvider;
+    @Autowired
     private VideoNameTrimmer nameTrimmer;
 
-    @Autowired
-    public void setPathProvider(SystemPathProvider pathProvider) {
-        this.pathProvider = pathProvider;
-    }
-
-    @Autowired
-    public void setNameTrimmer(VideoNameTrimmer nameTrimmer) {
-        this.nameTrimmer = nameTrimmer;
-    }
+    private Pattern videoPattern = Pattern.compile("(.*)(\\d{4})");
 
     public String resolve(DownloadsVideo downloadsVideo) {
         VideoNameDTO videoName = processVideoName(downloadsVideo);

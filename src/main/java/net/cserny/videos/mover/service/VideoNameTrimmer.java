@@ -13,12 +13,8 @@ import java.util.regex.Pattern;
 @Service
 public class VideoNameTrimmer
 {
-    private VideoNameProvider videoNameProvider;
-
     @Autowired
-    public void setVideoNameProvider(VideoNameProvider videoNameProvider) {
-        this.videoNameProvider = videoNameProvider;
-    }
+    private VideoNameProvider videoNameProvider;
 
     public String trim(String videoName) {
         for (String part : videoNameProvider.getNames()) {
