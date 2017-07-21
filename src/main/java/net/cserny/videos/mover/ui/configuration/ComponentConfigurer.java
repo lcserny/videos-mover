@@ -16,33 +16,35 @@ import org.springframework.stereotype.Service;
 public class ComponentConfigurer
 {
     @SuppressWarnings("unchecked")
-    public void configure(TableView tableView) {
+    public void configureTable(TableView tableView, TableColumn... columns) {
         tableView.setEditable(true);
         tableView.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 
-        TableColumn<DownloadsVideo, String> nameCol = new TableColumn<>("Name");
-        nameCol.setPrefWidth(250);
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("fileName"));
-        nameCol.setCellFactory(TextFieldTableCell.forTableColumn());
-
-        TableColumn<DownloadsVideo, Boolean> movieCol = new TableColumn<>("Movie");
-        movieCol.setPrefWidth(70);
-        movieCol.setCellValueFactory(new PropertyValueFactory<>("movie"));
-        movieCol.setCellFactory(param -> new CheckBoxTableCell<>());
-
-        TableColumn<DownloadsVideo, Boolean> tvCol = new TableColumn<>("TvShow");
-        tvCol.setPrefWidth(70);
-        tvCol.setCellValueFactory(new PropertyValueFactory<>("tvShow"));
-        tvCol.setCellFactory(param -> new CheckBoxTableCell<>());
-
-        TableColumn<DownloadsVideo, String> outputCol = new TableColumn<>("Output");
-        outputCol.setPrefWidth(490);
-        outputCol.setCellValueFactory(new PropertyValueFactory<>("outputPath"));
-        outputCol.setCellFactory(TextFieldTableCell.forTableColumn());
-
-        outputCol.setOnEditCommit(event -> event.getTableView().getItems()
-                .get(event.getTablePosition().getRow()).setOutputPath(event.getNewValue()));
-
-        tableView.getColumns().addAll(nameCol, movieCol, tvCol, outputCol);
+        for (TableColumn column : columns) {
+            switch (column.getText()) {
+                case "Name":
+                    TableColumn<DownloadsVideo, String> nameCol = (TableColumn<DownloadsVideo, String>) column;
+                    nameCol.setCellValueFactory(new PropertyValueFactory<>("fileName"));
+                    nameCol.setCellFactory(TextFieldTableCell.forTableColumn());
+                    break;
+                case "Movie":
+                    TableColumn<DownloadsVideo, Boolean> movieCol = (TableColumn<DownloadsVideo, Boolean>) column;
+                    movieCol.setCellValueFactory(new PropertyValueFactory<>("movie"));
+                    movieCol.setCellFactory(param -> new CheckBoxTableCell<>());
+                    break;
+                case "TVShow":
+                    TableColumn<DownloadsVideo, Boolean> tvShowCol = (TableColumn<DownloadsVideo, Boolean>) column;
+                    tvShowCol.setCellValueFactory(new PropertyValueFactory<>("tvShow"));
+                    tvShowCol.setCellFactory(param -> new CheckBoxTableCell<>());
+                    break;
+                case "Output":
+                    TableColumn<DownloadsVideo, String> outputCol = (TableColumn<DownloadsVideo, String>) column;
+                    outputCol.setCellValueFactory(new PropertyValueFactory<>("outputPath"));
+                    outputCol.setCellFactory(TextFieldTableCell.forTableColumn());
+                    outputCol.setOnEditCommit(event -> event.getTableView().getItems()
+                            .get(event.getTablePosition().getRow()).setOutputPath(event.getNewValue()));
+                    break;
+            }
+        }
     }
 }

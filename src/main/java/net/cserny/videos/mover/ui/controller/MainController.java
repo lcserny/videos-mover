@@ -1,20 +1,16 @@
 package net.cserny.videos.mover.ui.controller;
 
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import net.cserny.videos.mover.service.VideoMover;
@@ -33,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Leonardo Cserny on 16.10.2016.
@@ -53,6 +48,14 @@ public class MainController implements Initializable
     private TextField tvShowPathTextField;
     @FXML
     private TableView<DownloadsVideo> tableView;
+    @FXML
+    private TableColumn<DownloadsVideo, String> nameCol;
+    @FXML
+    private TableColumn<DownloadsVideo, Boolean> movieCol;
+    @FXML
+    private TableColumn<DownloadsVideo, Boolean> tvshowCol;
+    @FXML
+    private TableColumn<DownloadsVideo, String> outputCol;
 
     private ComponentConfigurer componentConfigurer;
     private SystemPathProvider pathProvider;
@@ -93,7 +96,7 @@ public class MainController implements Initializable
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        componentConfigurer.configure(tableView);
+        componentConfigurer.configureTable(tableView, nameCol, movieCol, tvshowCol, outputCol);
         initDefaults();
     }
 

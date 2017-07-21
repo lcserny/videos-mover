@@ -3,20 +3,20 @@
 }
 
 .scan-button {
-    -fx-background-color: #6180ac;
+    -fx-background-color: linear-gradient(#7a99ce, #6180ac);
     -fx-text-fill: white;
     -fx-border-color: white;
     -fx-border-width: 2px;
 }
 
 .scan-button:hover {
-    -fx-background-color: #708fc4;
+    -fx-background-color: #446287;
 }
 
 .default-button {
     -fx-border-color: black;
     -fx-text-fill: white;
-    -fx-background-color:  #555555;
+    -fx-background-color: linear-gradient(#666666, #555555);
 }
 
 .default-button:hover {
@@ -29,12 +29,21 @@
     -fx-border-color: black;
 }
 
-.main-table {
-    /*-fx-background-color:  #999999;*/
-    /*-fx-fill: white;*/
+.table-view .column-header {
+    -fx-background-color: #555555;
 }
 
-.table-row-cell {
-    /*-fx-border-color: #9f9f9f;*/
-    /*-fx-background-color: transparent;*/
+.table-view .column-header .label {
+    -fx-pref-height: 30px;
+    -fx-border-color: black;
+    -fx-border-width: 2px;
+    -fx-text-fill: white;
+}
+
+.table-view {
+    -fx-background-color:  #777777;
+}
+
+.table-view .filler {
+    -fx-background-color:  #666666;
 }
