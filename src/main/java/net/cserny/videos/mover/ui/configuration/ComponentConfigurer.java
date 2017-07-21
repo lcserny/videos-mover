@@ -25,25 +25,23 @@ public class ComponentConfigurer
         nameCol.setCellValueFactory(new PropertyValueFactory<>("fileName"));
         nameCol.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        TableColumn<DownloadsVideo, Boolean> movieCol = new TableColumn<>("Is Movie");
-        movieCol.setPrefWidth(75);
+        TableColumn<DownloadsVideo, Boolean> movieCol = new TableColumn<>("Movie");
+        movieCol.setPrefWidth(70);
         movieCol.setCellValueFactory(new PropertyValueFactory<>("movie"));
         movieCol.setCellFactory(param -> new CheckBoxTableCell<>());
 
-        TableColumn<DownloadsVideo, Boolean> tvCol = new TableColumn<>("Is TvShow");
-        tvCol.setPrefWidth(75);
+        TableColumn<DownloadsVideo, Boolean> tvCol = new TableColumn<>("TvShow");
+        tvCol.setPrefWidth(70);
         tvCol.setCellValueFactory(new PropertyValueFactory<>("tvShow"));
         tvCol.setCellFactory(param -> new CheckBoxTableCell<>());
 
         TableColumn<DownloadsVideo, String> outputCol = new TableColumn<>("Output");
-        outputCol.setPrefWidth(480);
+        outputCol.setPrefWidth(490);
         outputCol.setCellValueFactory(new PropertyValueFactory<>("outputPath"));
         outputCol.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        outputCol.setOnEditCommit(event -> event.getTableView()
-                .getItems()
-                .get(event.getTablePosition().getRow())
-                .setOutputPath(event.getNewValue()));
+        outputCol.setOnEditCommit(event -> event.getTableView().getItems()
+                .get(event.getTablePosition().getRow()).setOutputPath(event.getNewValue()));
 
         tableView.getColumns().addAll(nameCol, movieCol, tvCol, outputCol);
     }

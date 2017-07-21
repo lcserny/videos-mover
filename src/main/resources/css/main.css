@@ -1,3 +1,40 @@
 * {
     -fx-font-size: 12;
 }
+
+.scan-button {
+    -fx-background-color: #6180ac;
+    -fx-text-fill: white;
+    -fx-border-color: white;
+    -fx-border-width: 2px;
+}
+
+.scan-button:hover {
+    -fx-background-color: #708fc4;
+}
+
+.default-button {
+    -fx-border-color: black;
+    -fx-text-fill: white;
+    -fx-background-color:  #555555;
+}
+
+.default-button:hover {
+    -fx-background-color:  #444444;
+}
+
+.path-text {
+    -fx-background-color:  #999999;
+    -fx-text-fill: #eeeeee;
+    -fx-border-color: black;
+}
+
+.main-table {
+    /*-fx-background-color:  #999999;*/
+    /*-fx-fill: white;*/
+}
+
+.table-row-cell {
+    /*-fx-border-color: #9f9f9f;*/
+    /*-fx-background-color: transparent;*/
+}
