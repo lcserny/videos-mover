@@ -41,7 +41,7 @@ public class VideosMoverApplication extends Application
         primaryStage.setTitle("Downloads Video Mover");
         primaryStage.setScene(scene);
         primaryStage.centerOnScreen();
-        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/pomodoro.png")));
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/application.png")));
         primaryStage.show();
     }
 
