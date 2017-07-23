@@ -6,6 +6,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import net.cserny.videos.mover.ui.model.DownloadsVideo;
 import org.springframework.stereotype.Service;
 
@@ -46,5 +48,9 @@ public class ComponentConfigurer
                     break;
             }
         }
+    }
+
+    public void configureLoadingImage(ImageView imageView) {
+        imageView.setImage(new Image(getClass().getResourceAsStream("/images/scan-button.png")));
     }
 }
