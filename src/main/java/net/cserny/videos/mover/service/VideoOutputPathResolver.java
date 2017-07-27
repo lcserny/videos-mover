@@ -3,9 +3,9 @@ package net.cserny.videos.mover.service;
 import net.cserny.videos.mover.model.VideoNameDTO;
 import net.cserny.videos.mover.service.provider.SystemPathProvider;
 import net.cserny.videos.mover.ui.model.DownloadsVideo;
-import org.simmetrics.StringMetric;
-import org.simmetrics.metrics.StringMetrics;
+import org.apache.commons.text.similarity.FuzzyScore;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -18,8 +18,6 @@ import java.util.regex.Pattern;
 @Service
 public class VideoOutputPathResolver
 {
-    public static final double ACCEPTED_SEARCH_COEFFICIENT = 0.87;
-
     @Autowired
     private SystemPathProvider pathProvider;
     @Autowired
@@ -56,15 +54,26 @@ public class VideoOutputPathResolver
     private File processOutputVideoFolder(String path, VideoNameDTO videoName) {
         File videoParent = new File(path);
         File[] folders = videoParent.listFiles();
-        StringMetric stringMetric = StringMetrics.cosineSimilarity();
 
         if (folders != null) {
-            for (int i = folders.length - 1; i >= 0; i--) {
-                File folder = folders[i];
-                float result = stringMetric.compare(videoName.getName(), folder.getName());
-                if (result >= ACCEPTED_SEARCH_COEFFICIENT) {
-                    return folder;
+            FuzzyScore fuzzyScore = new FuzzyScore(LocaleContextHolder.getLocale());
+            int maxCoefficient = 0;
+            File selectedFolder = null;
+
+            for (File folder : folders) {
+                if (!folder.isDirectory()) {
+                    continue;
                 }
+
+                int currentCoefficient = fuzzyScore.fuzzyScore(videoName.getName(), folder.getName());
+                if (currentCoefficient > maxCoefficient) {
+                    maxCoefficient = currentCoefficient;
+                    selectedFolder = folder;
+                }
+            }
+
+            if (selectedFolder != null && maxCoefficient >= videoName.getName().length()) {
+                return selectedFolder;
             }
         }
 
