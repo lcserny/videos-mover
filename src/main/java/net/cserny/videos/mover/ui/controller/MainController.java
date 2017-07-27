@@ -76,7 +76,6 @@ public class MainController implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         componentConfigurer.configureTable(tableView, nameCol, movieCol, tvshowCol, outputCol);
-        componentConfigurer.configureLoadingImage(loadingImage);
         initDefaults();
     }
 

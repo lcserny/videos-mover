@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="container" prefHeight="650.0" prefWidth="900.0" style="-fx-background-color: #666666;" styleClass="container" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.cserny.videos.mover.ui.controller.MainController">
+<BorderPane fx:id="container" prefHeight="650.0" prefWidth="900.0" style="-fx-background-color: #666666;" styleClass="container" xmlns="http://javafx.com/javafx/8.0.111" stylesheets="@/css/main.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.cserny.videos.mover.ui.controller.MainController">
    <top>
       <BorderPane prefHeight="75.0" prefWidth="900.0" styleClass="top-container" BorderPane.alignment="CENTER">
          <left>
@@ -29,7 +29,11 @@
                  <HBox alignment="CENTER" prefHeight="75.0" prefWidth="300.0" styleClass="scan-container" BorderPane.alignment="CENTER">
                   <Button alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#loadTableView" prefHeight="50.0" prefWidth="215.0" styleClass="scan-button" text="Search Downloads" textAlignment="CENTER">
                   <graphic>
-                      <ImageView fx:id="loadingImage" fitHeight="30.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true"></ImageView>
+                      <ImageView fx:id="loadingImage" fitHeight="30.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                          <image>
+                              <Image url="@/images/scan-button.png" />
+                          </image>
+                      </ImageView>
                   </graphic>
                </Button>
               </HBox>
