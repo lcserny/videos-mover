@@ -1,9 +1,9 @@
 package net.cserny.videos.mover.service;
 
+import me.xdrop.fuzzywuzzy.FuzzySearch;
 import net.cserny.videos.mover.model.VideoNameDTO;
 import net.cserny.videos.mover.service.provider.SystemPathProvider;
 import net.cserny.videos.mover.ui.model.DownloadsVideo;
-import org.apache.commons.text.similarity.FuzzyScore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
@@ -18,6 +18,8 @@ import java.util.regex.Pattern;
 @Service
 public class VideoOutputPathResolver
 {
+    private static final int ACCEPTED_SIMILARITY_PERCENT = 80;
+
     @Autowired
     private SystemPathProvider pathProvider;
     @Autowired
@@ -56,7 +58,6 @@ public class VideoOutputPathResolver
         File[] folders = videoParent.listFiles();
 
         if (folders != null) {
-            FuzzyScore fuzzyScore = new FuzzyScore(LocaleContextHolder.getLocale());
             int maxCoefficient = 0;
             File selectedFolder = null;
 
@@ -65,14 +66,14 @@ public class VideoOutputPathResolver
                     continue;
                 }
 
-                int currentCoefficient = fuzzyScore.fuzzyScore(videoName.getName(), folder.getName());
+                int currentCoefficient = FuzzySearch.ratio(videoName.getName(), folder.getName());
                 if (currentCoefficient > maxCoefficient) {
                     maxCoefficient = currentCoefficient;
                     selectedFolder = folder;
                 }
             }
 
-            if (selectedFolder != null && maxCoefficient >= videoName.getName().length()) {
+            if (selectedFolder != null && maxCoefficient >= ACCEPTED_SIMILARITY_PERCENT) {
                 return selectedFolder;
             }
         }
