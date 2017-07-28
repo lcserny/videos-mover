@@ -28,6 +28,9 @@ import org.springframework.stereotype.Controller;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -90,8 +93,8 @@ public class MainController implements Initializable
         Runnable expensiveTask = () -> {
             if (pathProvider.getDownloadsPath() != null) {
                 ObservableList<DownloadsVideo> items = FXCollections.observableArrayList();
-                for (File videoFile : videoScanner.scan(pathProvider.getDownloadsPath())) {
-                    items.add(convertFileToDownloadsVideo(videoFile));
+                for (Path videoPath : videoScanner.scan(pathProvider.getDownloadsPath())) {
+                    items.add(convertFileToDownloadsVideo(videoPath));
                 }
                 items.sort(Comparator.comparing(video -> video.getFileName().toLowerCase()));
                 tableView.setItems(items);
@@ -203,10 +206,10 @@ public class MainController implements Initializable
         }
     }
 
-    private DownloadsVideo convertFileToDownloadsVideo(File videoFile) {
+    private DownloadsVideo convertFileToDownloadsVideo(Path videoPath) {
         DownloadsVideo downloadsVideo = new DownloadsVideo();
-        downloadsVideo.setFile(videoFile);
-        downloadsVideo.setFileName(videoFile.getName());
+        downloadsVideo.setFile(videoPath);
+        downloadsVideo.setFileName(videoPath.getFileName().toString());
         downloadsVideo.setMovie(false);
         downloadsVideo.setTvShow(false);
 

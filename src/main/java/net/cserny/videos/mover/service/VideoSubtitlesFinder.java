@@ -3,13 +3,14 @@ package net.cserny.videos.mover.service;
 import net.cserny.videos.mover.service.provider.SubtitleExtensionsProvider;
 import net.cserny.videos.mover.service.provider.SystemPathProvider;
 import net.cserny.videos.mover.ui.model.DownloadsVideo;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -23,27 +24,29 @@ public class VideoSubtitlesFinder
     @Autowired
     private SubtitleExtensionsProvider subtitleExtensionsProvider;
 
-    public List<File> find(DownloadsVideo downloadsVideo) {
-        List<File> files = new ArrayList<>();
-        if (downloadsVideo.getFile().getParent().equals(pathProvider.getDownloadsPath())) {
-            addSubtitleByExtension(files, downloadsVideo.getFile().getParent(), Arrays.asList(subtitleExtensionsProvider.getExtensions()));
+    public List<Path> find(DownloadsVideo downloadsVideo) {
+        List<Path> subtitlePaths = new ArrayList<>();
+        if (downloadsVideo.getFile().getParent().toString().equals(pathProvider.getDownloadsPath())) {
+            addSubtitleByExtension(subtitlePaths, downloadsVideo.getFile().getParent());
         }
-        return files;
+        return subtitlePaths;
     }
 
-    private void addSubtitleByExtension(List<File> files, String path, List<String> extensions) {
-        File dir = new File(path);
-        File[] dirFiles = dir.listFiles();
-        if (dirFiles != null && dirFiles.length > 0) {
-            for (File file : dirFiles) {
-                if (!file.isDirectory()) {
-                    if (extensions.contains(FilenameUtils.getExtension(file.getAbsolutePath()))) {
-                        files.add(file);
-                    }
-                } else {
-                    addSubtitleByExtension(files, file.getPath(), extensions);
-                }
+    private void addSubtitleByExtension(List<Path> subtitles, Path path) {
+        try (DirectoryStream<Path> subtitleDirectory = Files.newDirectoryStream(path)) {
+            for (Path subtitle : subtitleDirectory) {
+                if (Files.isDirectory(subtitle)) addSubtitleByExtension(subtitles, subtitle);
+                else if (isSubtitleExtensionAllowed(subtitle)) subtitles.add(subtitle);
+            }
+        } catch (IOException e) { e.printStackTrace(); }
+    }
+
+    private boolean isSubtitleExtensionAllowed(Path subtitle) {
+        for (String extension : subtitleExtensionsProvider.getExtensions()) {
+            if (subtitle.endsWith(extension)) {
+                return true;
             }
         }
+        return false;
     }
 }

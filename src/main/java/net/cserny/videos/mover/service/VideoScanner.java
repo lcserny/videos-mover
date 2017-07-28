@@ -6,12 +6,17 @@ import org.apache.tika.detect.DefaultDetector;
 import org.apache.tika.detect.Detector;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
+import org.apache.tika.mime.MediaType;
 import org.apache.tika.mime.MimeTypes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,64 +28,57 @@ import java.util.List;
 @Service
 public class VideoScanner
 {
-    public static final int MIN_VIDEO_SIZE = 50 * 1024 * 1024;
+    @Value("${min.video.size}")
+    private Integer minVideoSize;
 
-    private Detector detector = new DefaultDetector(MimeTypes.getDefaultMimeTypes());
     @Autowired
     private VideoMimeTypeProvider mimeTypeProvider;
     @Autowired
     private VideoExcludePathsProvider excludePathsProvider;
 
-    public List<File> scan(String path) {
-        List<File> videoFiles = new ArrayList<>();
-        File directory = new File(path);
-        addVideosToList(videoFiles, directory);
+    private Detector detector = new DefaultDetector(MimeTypes.getDefaultMimeTypes());
+
+    public List<Path> scan(String path) {
+        List<Path> videoFiles = new ArrayList<>();
+        addVideosToList(videoFiles, Paths.get(path));
         return videoFiles;
     }
 
-    private void addVideosToList(List<File> videoFiles, File directory) {
-        File[] files = directory.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                if (!file.isDirectory()) {
-                    processFile(videoFiles, file);
-                } else {
-                    addVideosToList(videoFiles, file);
-                }
+    private void addVideosToList(List<Path> videoFiles, Path directory) {
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(directory)) {
+            for (Path path : directoryStream) {
+                if (Files.isDirectory(path)) addVideosToList(videoFiles, path);
+                else processFile(videoFiles, path);
             }
-        }
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
-    private void processFile(List<File> videoFiles, File file) {
-        if (isVideoSizeAcceptable(file) && isPathAllowed(file)) {
-            try (TikaInputStream stream = TikaInputStream.get(Paths.get(file.getAbsolutePath()))) {
-                Metadata metadata = new Metadata();
-                String fileInfo = detector.detect(stream, metadata).toString();
-                if (doesMimeTypeContainVideo(fileInfo)) {
-                    videoFiles.add(file);
+    private void processFile(List<Path> videoFiles, Path filePath) {
+        try (TikaInputStream stream = TikaInputStream.get(filePath)) {
+            if (isVideoSizeAcceptable(filePath) && isPathAllowed(filePath)) {
+                if (doesMimeTypeContainVideo(detector.detect(stream, new Metadata()))) {
+                    videoFiles.add(filePath);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-        }
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
-    private boolean doesMimeTypeContainVideo(String fileInfo) {
+    private boolean doesMimeTypeContainVideo(MediaType mediaType) {
         for (String allowedType : getDefaultAllowedTypes()) {
-            if (fileInfo.contains(allowedType)) {
+            if (mediaType.toString().contains(allowedType)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean isVideoSizeAcceptable(File file) {
-        return file.length() > MIN_VIDEO_SIZE;
+    private boolean isVideoSizeAcceptable(Path filePath) throws IOException {
+        return Files.size(filePath) > minVideoSize;
     }
 
-    private boolean isPathAllowed(File file) {
+    private boolean isPathAllowed(Path filePath) {
         for (String exclude : getDefaultExcludePaths()) {
-            if (file.getParent().contains(exclude)) {
+            if (filePath.getParent().toString().contains(exclude)) {
                 return false;
             }
         }
@@ -88,10 +86,10 @@ public class VideoScanner
     }
 
     private List<String> getDefaultAllowedTypes() {
-        return Arrays.asList(mimeTypeProvider.getTypes());
+        return mimeTypeProvider.getTypes();
     }
 
     private List<String> getDefaultExcludePaths() {
-        return Arrays.asList(excludePathsProvider.getPaths());
+        return excludePathsProvider.getPaths();
     }
 }

@@ -5,10 +5,15 @@ import net.cserny.videos.mover.model.VideoNameDTO;
 import net.cserny.videos.mover.service.provider.SystemPathProvider;
 import net.cserny.videos.mover.ui.model.DownloadsVideo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,7 +23,8 @@ import java.util.regex.Pattern;
 @Service
 public class VideoOutputPathResolver
 {
-    private static final int ACCEPTED_SIMILARITY_PERCENT = 80;
+    @Value("${similarity.percent}")
+    private Integer similarityPercent;
 
     @Autowired
     private SystemPathProvider pathProvider;
@@ -30,9 +36,9 @@ public class VideoOutputPathResolver
     public String resolve(DownloadsVideo downloadsVideo) {
         VideoNameDTO videoName = processVideoName(downloadsVideo);
         if (downloadsVideo.isMovie()) {
-            return processOutputVideoFolder(pathProvider.getMoviePath(), videoName).getAbsolutePath();
+            return processOutputVideoFolder(pathProvider.getMoviePath(), videoName);
         } else if (downloadsVideo.isTvShow()) {
-            return processOutputVideoFolder(pathProvider.getTvShowPath(), videoName).getAbsolutePath();
+            return processOutputVideoFolder(pathProvider.getTvShowPath(), videoName);
         }
         return null;
     }
@@ -53,36 +59,29 @@ public class VideoOutputPathResolver
         return buildVideoName(year, stripSpecialChars(videoName));
     }
 
-    private File processOutputVideoFolder(String path, VideoNameDTO videoName) {
-        File videoParent = new File(path);
-        File[] folders = videoParent.listFiles();
-
-        if (folders != null) {
+    private String processOutputVideoFolder(String path, VideoNameDTO videoName) {
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(path), Files::isDirectory)) {
             int maxCoefficient = 0;
-            File selectedFolder = null;
+            Path selectedFolder = null;
 
-            for (File folder : folders) {
-                if (!folder.isDirectory()) {
-                    continue;
-                }
-
-                int currentCoefficient = FuzzySearch.ratio(videoName.getName(), folder.getName());
+            for (Path dirPath : directoryStream) {
+                int currentCoefficient = FuzzySearch.ratio(videoName.getName(), dirPath.getFileName().toString());
                 if (currentCoefficient > maxCoefficient) {
                     maxCoefficient = currentCoefficient;
-                    selectedFolder = folder;
+                    selectedFolder = dirPath;
                 }
             }
 
-            if (selectedFolder != null && maxCoefficient >= ACCEPTED_SIMILARITY_PERCENT) {
-                return selectedFolder;
+            if (selectedFolder != null && maxCoefficient >= similarityPercent) {
+                return selectedFolder.toString();
             }
-        }
+        } catch (IOException e) { e.printStackTrace(); }
 
-        return new File(path + "/" + videoName.getFormattedName());
+        return path + "/" + videoName.getFormattedName();
     }
 
     private String retrieveTrimmedVideoName(DownloadsVideo downloadsVideo) {
-        String videoName = removeExtension(downloadsVideo.getFile().getName());
+        String videoName = removeExtension(downloadsVideo.getFile().getFileName().toString());
         return nameTrimmer.trim(videoName);
     }
 
@@ -98,9 +97,8 @@ public class VideoOutputPathResolver
     }
 
     private String toCamelCase(String text) {
-        String[] parts = text.split("\\s+");
         StringBuilder camelCaseString = new StringBuilder();
-        for (String part : parts){
+        for (String part : text.split("\\s+")){
             camelCaseString.append(toProperCase(part)).append(" ");
         }
         return camelCaseString.toString().trim();

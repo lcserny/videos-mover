@@ -3,7 +3,8 @@ package net.cserny.videos.mover.service.provider;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Created by Leonardo Cserny on 18.10.2016.
@@ -22,15 +23,15 @@ public class SystemPathProvider
         String movieDir = prefix + "Movies/Movies";
         String tvShowDir = prefix + "Movies/TV";
 
-        if (new File(downloadsDir).exists()) {
+        if (Files.exists(Paths.get(downloadsDir))) {
             downloadsPath = downloadsDir;
         }
 
-        if (new File(movieDir).exists()) {
+        if (Files.exists(Paths.get(movieDir))) {
             moviePath = movieDir;
         }
 
-        if (new File(tvShowDir).exists()) {
+        if (Files.exists(Paths.get(tvShowDir))) {
             tvShowPath = tvShowDir;
         }
     }

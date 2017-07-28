@@ -1,11 +1,12 @@
 package net.cserny.videos.mover.service;
 
 import net.cserny.videos.mover.ui.model.DownloadsVideo;
-import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Created by Leonardo Cserny on 18.10.2016.
@@ -14,22 +15,22 @@ import java.io.IOException;
 public class VideoMover
 {
     public void move(DownloadsVideo downloadsVideo) throws IOException {
-        createFolder(new File(downloadsVideo.getOutputPath()));
+        createFolder(Paths.get(downloadsVideo.getOutputPath()));
 
-        File newVideoFile = new File(downloadsVideo.getOutputPath() + "/" + downloadsVideo.getFileName());
-        if (newVideoFile.exists()) {
+        Path newVideoFile = Paths.get(downloadsVideo.getOutputPath() + "/" + downloadsVideo.getFileName());
+        if (Files.exists(newVideoFile)) {
             return;
         }
 
-        FileUtils.moveFile(downloadsVideo.getFile(), newVideoFile);
-        for (File subtitle : downloadsVideo.getSubtitles()) {
-            FileUtils.moveFile(subtitle, new File(newVideoFile.getParent() + "/" + subtitle.getName()));
+        Files.move(downloadsVideo.getFile(), newVideoFile);
+        for (Path subtitle : downloadsVideo.getSubtitles()) {
+            Files.move(subtitle, Paths.get(newVideoFile.getParent() + "/" + subtitle.getFileName()));
         }
     }
 
-    private void createFolder(File videoFolder) {
-        if (!videoFolder.exists()) {
-            videoFolder.mkdir();
+    private void createFolder(Path videoFolder) throws IOException {
+        if (!Files.exists(videoFolder)) {
+            Files.createDirectory(videoFolder);
         }
     }
 }
