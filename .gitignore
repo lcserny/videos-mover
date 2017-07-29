@@ -3,6 +3,7 @@
 
 # Project
 *.iml
+target/
 
 # User-specific stuff:
 .idea/**/workspace.xml
