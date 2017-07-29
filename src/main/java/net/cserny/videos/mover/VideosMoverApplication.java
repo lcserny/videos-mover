@@ -35,9 +35,8 @@ public class VideosMoverApplication extends Application
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Scene scene = new Scene(root);
         primaryStage.setTitle("Downloads Video Mover");
-        primaryStage.setScene(scene);
+        primaryStage.setScene(new Scene(root));
         primaryStage.centerOnScreen();
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/application.png")));
         primaryStage.show();

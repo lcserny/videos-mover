@@ -2,24 +2,16 @@ package net.cserny.videos.mover.service;
 
 import net.cserny.videos.mover.service.provider.VideoExcludePathsProvider;
 import net.cserny.videos.mover.service.provider.VideoMimeTypeProvider;
-import org.apache.tika.detect.DefaultDetector;
-import org.apache.tika.detect.Detector;
-import org.apache.tika.io.TikaInputStream;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.mime.MediaType;
-import org.apache.tika.mime.MimeTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -35,8 +27,6 @@ public class VideoScanner
     private VideoMimeTypeProvider mimeTypeProvider;
     @Autowired
     private VideoExcludePathsProvider excludePathsProvider;
-
-    private Detector detector = new DefaultDetector(MimeTypes.getDefaultMimeTypes());
 
     public List<Path> scan(String path) {
         List<Path> videoFiles = new ArrayList<>();
@@ -54,18 +44,19 @@ public class VideoScanner
     }
 
     private void processFile(List<Path> videoFiles, Path filePath) {
-        try (TikaInputStream stream = TikaInputStream.get(filePath)) {
+        try {
             if (isVideoSizeAcceptable(filePath) && isPathAllowed(filePath)) {
-                if (doesMimeTypeContainVideo(detector.detect(stream, new Metadata()))) {
+                String contentType = Files.probeContentType(filePath);
+                if (contentType != null && isMimeTypeAllowed(contentType)) {
                     videoFiles.add(filePath);
                 }
             }
         } catch (IOException e) { e.printStackTrace(); }
     }
 
-    private boolean doesMimeTypeContainVideo(MediaType mediaType) {
+    private boolean isMimeTypeAllowed(String mediaType) {
         for (String allowedType : getDefaultAllowedTypes()) {
-            if (mediaType.toString().contains(allowedType)) {
+            if (mediaType.equals(allowedType)) {
                 return true;
             }
         }
