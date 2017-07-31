@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="container" prefHeight="650.0" prefWidth="900.0" style="-fx-background-color: #666666;" styleClass="container" xmlns="http://javafx.com/javafx/8.0.111" stylesheets="@/css/main.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.cserny.videos.mover.ui.controller.MainController">
+<BorderPane fx:id="container" prefHeight="650.0" prefWidth="900.0" style="-fx-background-color: #666666;" styleClass="container" stylesheets="@/css/main.css" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.cserny.videos.mover.ui.controller.MainController">
    <top>
       <BorderPane prefHeight="75.0" prefWidth="900.0" styleClass="top-container" BorderPane.alignment="CENTER">
          <left>
@@ -78,7 +78,7 @@
             <TableColumn fx:id="nameCol" editable="false" prefWidth="250.0" text="Name" />
             <TableColumn fx:id="movieCol" prefWidth="70.0" text="Movie" />
             <TableColumn fx:id="tvshowCol" prefWidth="70.0" text="TVShow" />
-            <TableColumn fx:id="outputCol" prefWidth="490.0" text="Output" />
+            <TableColumn fx:id="outputCol" prefWidth="495.0" text="Output" />
          </columns>
       </TableView>
    </center>
