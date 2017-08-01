@@ -78,7 +78,7 @@
             <TableColumn fx:id="nameCol" editable="false" prefWidth="250.0" text="Name" />
             <TableColumn fx:id="movieCol" prefWidth="70.0" text="Movie" />
             <TableColumn fx:id="tvshowCol" prefWidth="70.0" text="TVShow" />
-            <TableColumn fx:id="outputCol" prefWidth="495.0" text="Output" />
+            <TableColumn fx:id="outputCol" prefWidth="494.0" text="Output" />
          </columns>
       </TableView>
    </center>
