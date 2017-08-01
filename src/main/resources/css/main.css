@@ -1,5 +1,7 @@
 * {
     -fx-font-size: 12;
+    -fx-font-family: Ubuntu, Arial, sans-serif;
+    -fx-font-smoothing-type: gray;
 }
 
 .scan-button {
