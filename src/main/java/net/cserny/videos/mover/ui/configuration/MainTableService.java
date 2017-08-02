@@ -59,7 +59,7 @@ public class MainTableService
         tableView.getItems().removeAll(toBeRemoved);
     }
 
-    public void loadTable() {
+    public synchronized void loadTable() {
         loadingImageService.showLoadingGif();
         Runnable expensiveTask = () -> {
             if (pathProvider.getDownloadsPath() != null) {

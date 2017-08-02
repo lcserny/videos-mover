@@ -54,7 +54,7 @@ public class MainController implements Initializable
         pathProvider.setTvShowTextField(tvShowPathTextField);
     }
 
-    public synchronized void loadTableView() {
+    public void loadTableView(ActionEvent actionEvent) {
         mainTableService.loadTable();
     }
 
