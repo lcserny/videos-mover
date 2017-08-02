@@ -5,14 +5,14 @@
 }
 
 .scan-button {
-    -fx-background-color: linear-gradient(to left, #4cce1c, #6aac92);
+    -fx-background-color: linear-gradient(to top right, #0094ff, #6a95ab);
     -fx-text-fill: white;
     -fx-border-color: white;
     -fx-border-width: 2px;
 }
 
 .scan-button:hover {
-    -fx-background-color: linear-gradient(to left, #44831b, #33664e);
+    -fx-background-color: linear-gradient(to top right, #0077cc, #4f6f80);
 }
 
 .default-button {
