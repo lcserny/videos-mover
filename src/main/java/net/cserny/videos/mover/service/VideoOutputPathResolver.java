@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -75,7 +74,9 @@ public class VideoOutputPathResolver
             if (selectedFolder != null && maxCoefficient >= similarityPercent) {
                 return selectedFolder.toString();
             }
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return path + "/" + videoName.getFormattedName();
     }
@@ -98,7 +99,7 @@ public class VideoOutputPathResolver
 
     private String toCamelCase(String text) {
         StringBuilder camelCaseString = new StringBuilder();
-        for (String part : text.split("\\s+")){
+        for (String part : text.split("\\s+")) {
             camelCaseString.append(toProperCase(part)).append(" ");
         }
         return camelCaseString.toString().trim();
