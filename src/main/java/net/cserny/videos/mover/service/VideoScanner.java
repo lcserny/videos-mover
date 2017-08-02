@@ -40,7 +40,9 @@ public class VideoScanner
                 if (Files.isDirectory(path)) addVideosToList(videoFiles, path);
                 else processFile(videoFiles, path);
             }
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void processFile(List<Path> videoFiles, Path filePath) {
@@ -51,7 +53,9 @@ public class VideoScanner
                     videoFiles.add(filePath);
                 }
             }
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean isMimeTypeAllowed(String mediaType) {

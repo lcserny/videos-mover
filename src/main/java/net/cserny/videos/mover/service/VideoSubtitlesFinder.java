@@ -38,7 +38,9 @@ public class VideoSubtitlesFinder
                 if (Files.isDirectory(subtitle)) addSubtitleByExtension(subtitles, subtitle);
                 else if (isSubtitleExtensionAllowed(subtitle)) subtitles.add(subtitle);
             }
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean isSubtitleExtensionAllowed(Path subtitle) {
