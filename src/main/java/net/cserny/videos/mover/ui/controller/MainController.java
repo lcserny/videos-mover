@@ -8,7 +8,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import net.cserny.videos.mover.service.*;
+import net.cserny.videos.mover.service.LoadingImageService;
+import net.cserny.videos.mover.service.VideoMover;
 import net.cserny.videos.mover.service.provider.SystemPathProvider;
 import net.cserny.videos.mover.ui.configuration.MainTableService;
 import net.cserny.videos.mover.ui.model.DownloadsVideo;
@@ -16,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.net.URL;
-import java.util.*;
+import java.util.ResourceBundle;
 
 /**
  * Created by Leonardo Cserny on 16.10.2016.
