@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Locale;
 
 /**
  * Created by Leonardo Cserny on 18.10.2016.
@@ -23,9 +25,9 @@ public class SystemPathProvider
     @Autowired
     private PopupService popupService;
 
-    private String downloadsPath;
-    private String moviePath;
-    private String tvShowPath;
+    private Path downloadsPath;
+    private Path moviePath;
+    private Path tvShowPath;
     private TextField downloadsTextField;
     private TextField moviesTextField;
     private TextField tvShowTextField;
@@ -33,33 +35,50 @@ public class SystemPathProvider
 
     @PostConstruct
     private void initDefaultPaths() {
-        String prefix = processPrefix();
-        String downloadsDir = prefix + "Downloads";
-        String movieDir = prefix + "Movies/Movies";
-        String tvShowDir = prefix + "Movies/TV";
-
-        if (Files.exists(Paths.get(downloadsDir))) {
-            downloadsPath = downloadsDir;
-        }
-
-        if (Files.exists(Paths.get(movieDir))) {
-            moviePath = movieDir;
-        }
-
-        if (Files.exists(Paths.get(tvShowDir))) {
-            tvShowPath = tvShowDir;
+        if (isWindowsOs()) {
+            initPaths("D:/");
+        } else {
+            initPaths("/mnt/Data/");
         }
     }
 
-    public String getDownloadsPath() {
+    private void initPaths(String osPrefix) {
+        Path downloadsPath = Paths.get(osPrefix + "Downloads");
+        if (Files.exists(downloadsPath)) {
+            this.downloadsPath = downloadsPath;
+        }
+
+        Path moviesPath = Paths.get(osPrefix + "Movies/Movies");
+        Path alternateMoviesPath = Paths.get(osPrefix + "Videos/Movies");
+        if (Files.exists(moviesPath)) {
+            this.moviePath = moviesPath;
+        } else if (Files.exists(alternateMoviesPath)) {
+            this.moviePath = alternateMoviesPath;
+        }
+
+        Path tvShowsPath = Paths.get(osPrefix + "Movies/TV");
+        Path alternateTvShowsPath = Paths.get(osPrefix + "Videos/TV");
+        if (Files.exists(tvShowsPath)) {
+            this.tvShowPath = tvShowsPath;
+        } else if (Files.exists(alternateTvShowsPath)) {
+            this.tvShowPath = alternateTvShowsPath;
+        }
+    }
+
+    private boolean isWindowsOs() {
+        String osName = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+        return osName.contains("win");
+    }
+
+    public Path getDownloadsPath() {
         return downloadsPath;
     }
 
-    public String getMoviePath() {
+    public Path getMoviePath() {
         return moviePath;
     }
 
-    public String getTvShowPath() {
+    public Path getTvShowPath() {
         return tvShowPath;
     }
 
@@ -87,53 +106,44 @@ public class SystemPathProvider
         return true;
     }
 
-    private String processPrefix() {
-        String prefix = "/mnt/Data/";
-        String osName = System.getProperty("os.name");
-        if (osName.contains("Windows")) {
-            prefix = "D:/";
-        }
-        return prefix;
-    }
-
     public void setDownloadsTextField(TextField downloadsTextField) {
         this.downloadsTextField = downloadsTextField;
-        this.downloadsTextField.setText(downloadsPath);
+        this.downloadsTextField.setText(downloadsPath.toString());
     }
 
     public void setMoviesTextField(TextField moviesTextField) {
         this.moviesTextField = moviesTextField;
-        this.moviesTextField.setText(moviePath);
+        this.moviesTextField.setText(moviePath.toString());
     }
 
     public void setTvShowTextField(TextField tvShowTextField) {
         this.tvShowTextField = tvShowTextField;
-        this.tvShowTextField.setText(tvShowPath);
+        this.tvShowTextField.setText(tvShowPath.toString());
     }
 
     public void populateDownloadsPath() {
-        File selectedDirectory = getSelectedDirectory("Choose Downlooads folder", downloadsPath);
+        File selectedDirectory = getSelectedDirectory("Choose Downlooads folder", downloadsPath.toString());
         if (selectedDirectory != null) {
             String selectedPath = selectedDirectory.getAbsolutePath();
-            downloadsPath = selectedPath;
+            downloadsPath = Paths.get(selectedPath);
             downloadsTextField.setText(selectedPath);
         }
     }
 
     public void populateMoviePath() {
-        File selectedDirectory = getSelectedDirectory("Choose Movie folder", moviePath);
+        File selectedDirectory = getSelectedDirectory("Choose Movie folder", moviePath.toString());
         if (selectedDirectory != null) {
             String selectedPath = selectedDirectory.getAbsolutePath();
-            moviePath = selectedPath;
+            moviePath = Paths.get(selectedPath);
             moviesTextField.setText(selectedPath);
         }
     }
 
     public void populateTvShowPath() {
-        File selectedDirectory = getSelectedDirectory("Choose Tv Show folder", tvShowPath);
+        File selectedDirectory = getSelectedDirectory("Choose Tv Show folder", tvShowPath.toString());
         if (selectedDirectory != null) {
             String selectedPath = selectedDirectory.getAbsolutePath();
-            tvShowPath = selectedPath;
+            tvShowPath = Paths.get(selectedPath);
             tvShowTextField.setText(selectedPath);
         }
     }

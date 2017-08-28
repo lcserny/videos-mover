@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +27,9 @@ public class VideoScanner
     @Autowired
     private VideoExcludePathsProvider excludePathsProvider;
 
-    public List<Path> scan(String path) {
+    public List<Path> scan(Path path) {
         List<Path> videoFiles = new ArrayList<>();
-        addVideosToList(videoFiles, Paths.get(path));
+        addVideosToList(videoFiles, path);
         return videoFiles;
     }
 

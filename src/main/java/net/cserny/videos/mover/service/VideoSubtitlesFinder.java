@@ -26,7 +26,7 @@ public class VideoSubtitlesFinder
 
     public List<Path> find(DownloadsVideo downloadsVideo) {
         List<Path> subtitlePaths = new ArrayList<>();
-        if (downloadsVideo.getFile().getParent().toString().equals(pathProvider.getDownloadsPath())) {
+        if (downloadsVideo.getFile().getParent().toString().equals(pathProvider.getDownloadsPath().toString())) {
             addSubtitleByExtension(subtitlePaths, downloadsVideo.getFile().getParent());
         }
         return subtitlePaths;

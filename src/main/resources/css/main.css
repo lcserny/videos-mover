@@ -22,11 +22,11 @@
 }
 
 .default-button:hover {
-    -fx-background-color:  #444444;
+    -fx-background-color: #444444;
 }
 
 .path-text {
-    -fx-background-color:  #999999;
+    -fx-background-color: #999999;
     -fx-text-fill: #eeeeee;
     -fx-border-color: black;
 }

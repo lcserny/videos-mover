@@ -20,13 +20,11 @@ public class DownloadsVideo
     private BooleanProperty tvShow = new SimpleBooleanProperty();
     private StringProperty outputPath = new SimpleStringProperty();
 
-    public Path getFile()
-    {
+    public Path getFile() {
         return file;
     }
 
-    public void setFile(Path file)
-    {
+    public void setFile(Path file) {
         this.file = file;
     }
 
@@ -38,33 +36,23 @@ public class DownloadsVideo
         this.subtitles = subtitles;
     }
 
-    public String getFileName()
-    {
+    public String getFileName() {
         return fileName.get();
     }
 
-    public StringProperty fileNameProperty()
-    {
-        return fileName;
-    }
-
-    public void setFileName(String fileName)
-    {
+    public void setFileName(String fileName) {
         this.fileName.set(fileName);
     }
 
-    public boolean isMovie()
-    {
+    public StringProperty fileNameProperty() {
+        return fileName;
+    }
+
+    public boolean isMovie() {
         return movie.get();
     }
 
-    public BooleanProperty movieProperty()
-    {
-        return movie;
-    }
-
-    public void setMovie(boolean movie)
-    {
+    public void setMovie(boolean movie) {
         if (movie) {
             this.movie.set(true);
             this.tvShow.set(false);
@@ -73,18 +61,15 @@ public class DownloadsVideo
         }
     }
 
-    public boolean isTvShow()
-    {
+    public BooleanProperty movieProperty() {
+        return movie;
+    }
+
+    public boolean isTvShow() {
         return tvShow.get();
     }
 
-    public BooleanProperty tvShowProperty()
-    {
-        return tvShow;
-    }
-
-    public void setTvShow(boolean tvShow)
-    {
+    public void setTvShow(boolean tvShow) {
         if (tvShow) {
             this.tvShow.set(true);
             this.movie.set(false);
@@ -93,21 +78,24 @@ public class DownloadsVideo
         }
     }
 
-    public String getOutputPath() {
-        return outputPath.get();
+    public BooleanProperty tvShowProperty() {
+        return tvShow;
     }
 
-    public StringProperty outputPathProperty() {
-        return outputPath;
+    public String getOutputPath() {
+        return outputPath.get();
     }
 
     public void setOutputPath(String outputPath) {
         this.outputPath.set(outputPath);
     }
 
+    public StringProperty outputPathProperty() {
+        return outputPath;
+    }
+
     @Override
-    public String toString()
-    {
+    public String toString() {
         return file.getFileName().toString();
     }
 }

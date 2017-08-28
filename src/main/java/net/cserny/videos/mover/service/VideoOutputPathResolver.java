@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,8 +57,8 @@ public class VideoOutputPathResolver
         return buildVideoName(year, stripSpecialChars(videoName));
     }
 
-    private String processOutputVideoFolder(String path, VideoNameDTO videoName) {
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(path), Files::isDirectory)) {
+    private String processOutputVideoFolder(Path path, VideoNameDTO videoName) {
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path, Files::isDirectory)) {
             int maxCoefficient = 0;
             Path selectedFolder = null;
 

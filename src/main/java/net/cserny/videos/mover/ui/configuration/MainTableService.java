@@ -47,12 +47,12 @@ public class MainTableService
         configureColumns();
     }
 
-    public void setTableItems(ObservableList<DownloadsVideo> items) {
-        tableView.setItems(items);
-    }
-
     public ObservableList<DownloadsVideo> getTableItems() {
         return tableView.getItems();
+    }
+
+    public void setTableItems(ObservableList<DownloadsVideo> items) {
+        tableView.setItems(items);
     }
 
     public void removeAllTableItems(List<DownloadsVideo> toBeRemoved) {

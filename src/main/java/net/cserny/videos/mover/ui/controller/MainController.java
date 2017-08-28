@@ -25,16 +25,26 @@ import java.util.ResourceBundle;
 @Controller
 public class MainController implements Initializable
 {
-    @FXML private BorderPane container;
-    @FXML private ImageView loadingImage;
-    @FXML private TextField downloadsPathTextField;
-    @FXML private TextField moviePathTextField;
-    @FXML private TextField tvShowPathTextField;
-    @FXML private TableView<DownloadsVideo> tableView;
-    @FXML private TableColumn<DownloadsVideo, String> nameCol;
-    @FXML private TableColumn<DownloadsVideo, Boolean> movieCol;
-    @FXML private TableColumn<DownloadsVideo, Boolean> tvshowCol;
-    @FXML private TableColumn<DownloadsVideo, String> outputCol;
+    @FXML
+    private BorderPane container;
+    @FXML
+    private ImageView loadingImage;
+    @FXML
+    private TextField downloadsPathTextField;
+    @FXML
+    private TextField moviePathTextField;
+    @FXML
+    private TextField tvShowPathTextField;
+    @FXML
+    private TableView<DownloadsVideo> tableView;
+    @FXML
+    private TableColumn<DownloadsVideo, String> nameCol;
+    @FXML
+    private TableColumn<DownloadsVideo, Boolean> movieCol;
+    @FXML
+    private TableColumn<DownloadsVideo, Boolean> tvshowCol;
+    @FXML
+    private TableColumn<DownloadsVideo, String> outputCol;
 
     @Autowired
     private LoadingImageService loadingImageService;
