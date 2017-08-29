@@ -11,10 +11,14 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Created by Leonardo Cserny on 18.10.2016.
@@ -38,8 +42,19 @@ public class SystemPathProvider
         if (isWindowsOs()) {
             initPaths("D:/");
         } else {
-            initPaths("/mnt/Data/");
+            if (isLaptopWithHostname("ubulap")) {
+                initPaths("/home/sabyx/");
+            } else {
+                initPaths("/mnt/Data/");
+            }
         }
+    }
+
+    private boolean isLaptopWithHostname(String hostname) {
+        try {
+            return hostname.equals(InetAddress.getLocalHost().getHostName());
+        } catch (UnknownHostException ignored) { }
+        return false;
     }
 
     private void initPaths(String osPrefix) {
