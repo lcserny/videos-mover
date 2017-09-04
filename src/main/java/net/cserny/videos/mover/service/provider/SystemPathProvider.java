@@ -122,18 +122,24 @@ public class SystemPathProvider
     }
 
     public void setDownloadsTextField(TextField downloadsTextField) {
-        this.downloadsTextField = downloadsTextField;
-        this.downloadsTextField.setText(downloadsPath.toString());
+        if (downloadsPath != null) {
+            this.downloadsTextField = downloadsTextField;
+            this.downloadsTextField.setText(downloadsPath.toString());
+        }
     }
 
     public void setMoviesTextField(TextField moviesTextField) {
-        this.moviesTextField = moviesTextField;
-        this.moviesTextField.setText(moviePath.toString());
+        if (moviePath != null) {
+            this.moviesTextField = moviesTextField;
+            this.moviesTextField.setText(moviePath.toString());
+        }
     }
 
     public void setTvShowTextField(TextField tvShowTextField) {
-        this.tvShowTextField = tvShowTextField;
-        this.tvShowTextField.setText(tvShowPath.toString());
+        if (tvShowPath != null) {
+            this.tvShowTextField = tvShowTextField;
+            this.tvShowTextField.setText(tvShowPath.toString());
+        }
     }
 
     public void populateDownloadsPath() {
