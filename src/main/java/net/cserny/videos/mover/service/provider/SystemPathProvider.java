@@ -122,28 +122,28 @@ public class SystemPathProvider
     }
 
     public void setDownloadsTextField(TextField downloadsTextField) {
+        this.downloadsTextField = downloadsTextField;
         if (downloadsPath != null) {
-            this.downloadsTextField = downloadsTextField;
             this.downloadsTextField.setText(downloadsPath.toString());
         }
     }
 
     public void setMoviesTextField(TextField moviesTextField) {
+        this.moviesTextField = moviesTextField;
         if (moviePath != null) {
-            this.moviesTextField = moviesTextField;
             this.moviesTextField.setText(moviePath.toString());
         }
     }
 
     public void setTvShowTextField(TextField tvShowTextField) {
+        this.tvShowTextField = tvShowTextField;
         if (tvShowPath != null) {
-            this.tvShowTextField = tvShowTextField;
             this.tvShowTextField.setText(tvShowPath.toString());
         }
     }
 
     public void populateDownloadsPath() {
-        File selectedDirectory = getSelectedDirectory("Choose Downlooads folder", downloadsPath.toString());
+        File selectedDirectory = getSelectedDirectory("Choose Downlooads folder", downloadsPath);
         if (selectedDirectory != null) {
             String selectedPath = selectedDirectory.getAbsolutePath();
             downloadsPath = Paths.get(selectedPath);
@@ -152,7 +152,7 @@ public class SystemPathProvider
     }
 
     public void populateMoviePath() {
-        File selectedDirectory = getSelectedDirectory("Choose Movie folder", moviePath.toString());
+        File selectedDirectory = getSelectedDirectory("Choose Movie folder", moviePath);
         if (selectedDirectory != null) {
             String selectedPath = selectedDirectory.getAbsolutePath();
             moviePath = Paths.get(selectedPath);
@@ -161,7 +161,7 @@ public class SystemPathProvider
     }
 
     public void populateTvShowPath() {
-        File selectedDirectory = getSelectedDirectory("Choose Tv Show folder", tvShowPath.toString());
+        File selectedDirectory = getSelectedDirectory("Choose Tv Show folder", tvShowPath);
         if (selectedDirectory != null) {
             String selectedPath = selectedDirectory.getAbsolutePath();
             tvShowPath = Paths.get(selectedPath);
@@ -169,8 +169,8 @@ public class SystemPathProvider
         }
     }
 
-    private File getSelectedDirectory(String title, String path) {
-        File directory = path != null ? new File(path) : null;
+    private File getSelectedDirectory(String title, Path path) {
+        File directory = path != null ? new File(path.toString()) : null;
         DirectoryChooser chooser = new DirectoryChooser();
         chooser.setTitle(title);
         if (directory != null && directory.exists()) {
